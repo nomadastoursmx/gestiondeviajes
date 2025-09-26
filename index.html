@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestión - Agencia de Viajes</title>
+    <title>Sistema de Gestión - Nómadas Tours</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -456,6 +456,29 @@
             margin-top: 5px;
         }
 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -520,15 +543,26 @@
                 <button class="btn btn-secondary" onclick="showSection('reports')">
                     <i class="fas fa-chart-bar"></i> Reportes
                 </button>
-                <button class="btn btn-warning" onclick="exportData('excel')">
-                    <i class="fas fa-file-excel"></i> Exportar Excel
-                </button>
-                <button class="btn btn-warning" onclick="exportData('csv')">
+                
+                <div class="file-input-wrapper">
+                    <button class="btn btn-warning">
+                        <i class="fas fa-file-import"></i> Importar JSON
+                    </button>
+                    <input type="file" id="importJson" accept=".json" onchange="importData(event)">
+                </div>
+                
+                <button class="btn btn-secondary" onclick="exportData('csv')">
                     <i class="fas fa-file-csv"></i> Exportar CSV
                 </button>
-                <button class="btn btn-warning" onclick="exportData('json')">
+                
+                <button class="btn btn-secondary" onclick="exportData('json')">
                     <i class="fas fa-file-code"></i> Exportar JSON
                 </button>
+                
+                <button class="btn btn-primary" onclick="saveData()">
+                    <i class="fas fa-save"></i> Guardar Datos
+                </button>
+                
                 <button class="btn btn-secondary" onclick="exportProjectCode()">
                     <i class="fas fa-download"></i> Exportar Código
                 </button>
@@ -651,6 +685,12 @@
                             <input type="text" id="clientDocument">
                         </div>
                     </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="clientFood" name="clientFood">
+                        <label for="clientFood">Requiere alimentos especiales</label>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="clientNotes">Notas Adicionales</label>
                         <textarea id="clientNotes" rows="3" placeholder="Observaciones, referencias, etc."></textarea>
@@ -797,6 +837,7 @@
         // Data persistence functions
         function saveData() {
             localStorage.setItem('travelAgencyTrips', JSON.stringify(trips));
+            showNotification('Datos guardados exitosamente', 'success');
         }
 
         function loadData() {
@@ -980,9 +1021,14 @@
                         <div class="clients-section">
                             <div class="clients-header">
                                 <h4><i class="fas fa-users"></i> Clientes (${clientsCount})</h4>
-                                <button class="btn btn-small btn-primary" onclick="manageClients('${trip.id}')">
-                                    Gestionar Clientes
-                                </button>
+                                <div style="display: flex; gap: 10px;">
+                                    ${clientsCount > 0 ? `<button class="btn btn-small btn-whatsapp" onclick="shareClientsList('${trip.id}')" title="Comprimir lista de clientes">
+                                        <i class="fab fa-whatsapp"></i> Compartir Lista
+                                    </button>` : ''}
+                                    <button class="btn btn-small btn-primary" onclick="manageClients('${trip.id}')">
+                                        Gestionar Clientes
+                                    </button>
+                                </div>
                             </div>
                             
                             ${clientsCount > 0 ? `
@@ -1013,6 +1059,7 @@
                                                 <span class="${clientPending > 0 ? 'payment-pending' : 'payment-complete'}">
                                                     Pendiente: ${formatCurrency(clientPending)}
                                                 </span>
+                                                ${client.food ? `<span style="color: #ff9800; margin-left: 5px;"><i class="fas fa-utensils"></i></span>` : ''}
                                             </div>
                                         </div>
                                     `;
@@ -1221,6 +1268,7 @@
                                         <div class="client-name">${client.name}</div>
                                         ${client.email ? `<div style="color: #666; font-size: 0.9rem;"><i class="fas fa-envelope"></i> ${client.email}</div>` : ''}
                                         ${client.phone ? `<div style="color: #666; font-size: 0.9rem;"><i class="fas fa-phone"></i> ${client.phone}</div>` : ''}
+                                        ${client.food ? `<div style="color: #ff9800; font-size: 0.9rem;"><i class="fas fa-utensils"></i> Requiere alimentos especiales</div>` : ''}
                                     </div>
                                     <div style="display: flex; gap: 5px;">
                                         <button class="btn btn-small btn-secondary" onclick="editClient('${client.id}')" title="Editar cliente">
@@ -1319,6 +1367,7 @@
             document.getElementById('clientEmail').value = client.email || '';
             document.getElementById('clientPhone').value = client.phone || '';
             document.getElementById('clientDocument').value = client.document || '';
+            document.getElementById('clientFood').checked = client.food || false;
             document.getElementById('clientNotes').value = client.notes || '';
             
             document.getElementById('clientFormModal').style.display = 'block';
@@ -1369,6 +1418,7 @@
                 email: document.getElementById('clientEmail').value.trim(),
                 phone: document.getElementById('clientPhone').value.trim(),
                 document: document.getElementById('clientDocument').value.trim(),
+                food: document.getElementById('clientFood').checked,
                 notes: document.getElementById('clientNotes').value.trim()
             };
 
@@ -1538,6 +1588,34 @@
             window.open(whatsappUrl, '_blank');
             
             showNotification('Abriendo WhatsApp para enviar recordatorio', 'success');
+        }
+
+        // Share clients list function
+        function shareClientsList(tripId) {
+            const trip = trips.find(t => t.id === tripId);
+            if (!trip || !trip.clients || trip.clients.length === 0) {
+                showNotification('No hay clientes para compartir', 'warning');
+                return;
+            }
+
+            // Create list message
+            let clientsList = `Lista de clientes para el viaje "${trip.name}" a ${trip.destination}:\n\n`;
+            
+            trip.clients.forEach((client, index) => {
+                clientsList += `${index + 1}. ${client.name}`;
+                if (client.phone) clientsList += ` - ${client.phone}`;
+                if (client.food) clientsList += ` 🍽️`;
+                clientsList += `\n`;
+            });
+            
+            clientsList += `\nFechas: ${formatDate(trip.startDate)} al ${formatDate(trip.endDate)}`;
+            clientsList += `\nPrecio: ${formatCurrency(trip.price)} por persona`;
+
+            const message = encodeURIComponent(clientsList);
+            const whatsappUrl = `https://wa.me/?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            
+            showNotification('Abriendo WhatsApp para compartir lista de clientes', 'success');
         }
 
         // Expense management functions
@@ -1967,6 +2045,7 @@
                                                         <div>
                                                             <div style="font-weight: bold;">${client.name}</div>
                                                             <div style="font-size: 0.8rem; color: #666;">${clientCompletion}% completado</div>
+                                                            ${client.food ? `<div style="font-size: 0.8rem; color: #ff9800;"><i class="fas fa-utensils"></i> Requiere alimentos</div>` : ''}
                                                         </div>
                                                         <div style="text-align: right;">
                                                             <div style="font-weight: bold; color: #4caf50;">${formatCurrency(clientPaid)}</div>
@@ -2009,7 +2088,37 @@
             `;
         }
 
-        // Export functions
+        // Import/Export functions
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate imported data structure
+                    if (importedData.trips && Array.isArray(importedData.trips)) {
+                        if (confirm('¿Estás seguro de que quieres importar estos datos? Esto reemplazará todos los datos actuales.')) {
+                            trips = importedData.trips;
+                            saveData();
+                            renderDashboard();
+                            showNotification('Datos importados exitosamente', 'success');
+                        }
+                    } else {
+                        showNotification('El archivo JSON no tiene el formato correcto', 'error');
+                    }
+                } catch (error) {
+                    showNotification('Error al leer el archivo JSON', 'error');
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset file input
+            event.target.value = '';
+        }
+
         function exportData(format) {
             if (trips.length === 0) {
                 showNotification('No hay datos para exportar', 'warning');
@@ -2018,14 +2127,14 @@
 
             let data, filename, mimeType;
 
-            if (format === 'excel' || format === 'csv') {
-                // Prepare data for CSV/Excel
+            if (format === 'csv') {
+                // Prepare data for CSV
                 const csvData = [];
                 
                 // Headers
                 csvData.push([
                     'Viaje', 'Destino', 'Fecha Inicio', 'Fecha Fin', 'Precio por Persona',
-                    'Cliente', 'Email', 'Teléfono', 'Documento', 'Monto Pagado', 'Monto Pendiente',
+                    'Cliente', 'Email', 'Teléfono', 'Documento', 'Alimentos Especiales', 'Monto Pagado', 'Monto Pendiente',
                     'Fecha Pago', 'Método Pago', 'Referencia', 'Notas Cliente', 'Notas Pago',
                     'Gasto Descripción', 'Gasto Categoría', 'Gasto Monto', 'Gasto Fecha', 'Gasto Notas'
                 ]);
@@ -2035,7 +2144,7 @@
                     if (!trip.clients || trip.clients.length === 0) {
                         csvData.push([
                             trip.name, trip.destination, trip.startDate, trip.endDate, trip.price,
-                            '', '', '', '', 0, trip.price, '', '', '', '', '', '', '', '', '', ''
+                            '', '', '', '', '', 0, trip.price, '', '', '', '', '', '', '', '', '', ''
                         ]);
                     } else {
                         trip.clients.forEach(client => {
@@ -2045,14 +2154,14 @@
                             if (!client.payments || client.payments.length === 0) {
                                 csvData.push([
                                     trip.name, trip.destination, trip.startDate, trip.endDate, trip.price,
-                                    client.name, client.email || '', client.phone || '', client.document || '',
+                                    client.name, client.email || '', client.phone || '', client.document || '', client.food ? 'Sí' : 'No',
                                     totalPaid, pending, '', '', '', client.notes || '', '', '', '', '', ''
                                 ]);
                             } else {
                                 client.payments.forEach(payment => {
                                     csvData.push([
                                         trip.name, trip.destination, trip.startDate, trip.endDate, trip.price,
-                                        client.name, client.email || '', client.phone || '', client.document || '',
+                                        client.name, client.email || '', client.phone || '', client.document || '', client.food ? 'Sí' : 'No',
                                         totalPaid, pending, payment.date, payment.method, payment.reference || '',
                                         client.notes || '', payment.notes || '', '', '', '', '', ''
                                     ]);
@@ -2066,33 +2175,20 @@
                         trip.expenses.forEach(expense => {
                             csvData.push([
                                 trip.name, trip.destination, trip.startDate, trip.endDate, trip.price,
-                                '', '', '', '', '', '', '', '', '', '', '',
+                                '', '', '', '', '', '', '', '', '', '', '', '',
                                 expense.description, expense.category, expense.amount, expense.date, expense.notes || ''
                             ]);
                         });
                     }
                 });
 
-                if (format === 'csv') {
-                    data = csvData.map(row => 
-                        row.map(cell => 
-                            typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell
-                        ).join(',')
-                    ).join('\n');
-                    filename = `agencia_viajes_${new Date().toISOString().split('T')[0]}.csv`;
-                    mimeType = 'text/csv;charset=utf-8;';
-                } else {
-                    // For Excel, we'll create a more complex CSV that Excel can handle better
-                    data = '\ufeff' + csvData.map(row => 
-                        row.map(cell => 
-                            typeof cell === 'string' && (cell.includes(',') || cell.includes('"')) 
-                                ? `"${cell.replace(/"/g, '""')}"` 
-                                : cell
-                        ).join(',')
-                    ).join('\n');
-                    filename = `agencia_viajes_${new Date().toISOString().split('T')[0]}.csv`;
-                    mimeType = 'application/vnd.ms-excel;charset=utf-8;';
-                }
+                data = csvData.map(row => 
+                    row.map(cell => 
+                        typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell
+                    ).join(',')
+                ).join('\n');
+                filename = `agencia_viajes_${new Date().toISOString().split('T')[0]}.csv`;
+                mimeType = 'text/csv;charset=utf-8;';
             } else if (format === 'json') {
                 // Export complete JSON data
                 const exportData = {
