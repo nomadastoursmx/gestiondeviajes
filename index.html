@@ -6,6 +6,7 @@
     <title>Sistema de Gestión - Nómadas Tours</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #4361ee;
@@ -223,6 +224,11 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .summary-cards.hidden {
+            display: none;
         }
 
         .summary-card {
@@ -262,6 +268,7 @@
             background: white;
             border-radius: 15px;
             padding: 25px;
+            padding-top: 45px; /* Espacio adicional para el badge */
             box-shadow: var(--shadow);
             border: 1px solid #f0f0f0;
             transition: var(--transition);
@@ -289,6 +296,7 @@
             justify-content: space-between;
             align-items: start;
             margin-bottom: 15px;
+            margin-top: 10px; /* Separación del badge superior */
         }
 
         .trip-title {
@@ -309,6 +317,10 @@
         .trip-actions {
             display: flex;
             gap: 8px;
+            z-index: 2; /* Por encima del badge */
+            background: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente */
+            padding: 5px;
+            border-radius: 8px;
         }
 
         .btn-small {
@@ -343,6 +355,33 @@
             margin-bottom: 15px;
         }
 
+        .trip-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1; /* Debajo de los botones */
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge.completed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-badge.pending {
+            background-color: #fff8e1;
+            color: #f57c00;
+        }
+
         .clients-section,
         .expenses-section {
             border-top: 2px solid #f0f0f0;
@@ -350,12 +389,29 @@
             margin-top: 20px;
         }
 
-        .clients-header,
-        .expenses-header {
+        /* Corrección para el encabezado de la sección de clientes */
+        .clients-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .clients-header h4 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clients-header .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         .client-item {
@@ -850,6 +906,8 @@
             .trip-actions {
                 width: 100%;
                 justify-content: space-between;
+                flex-wrap: wrap;
+                background: rgba(255, 255, 255, 0.9);
             }
 
             .clients-table {
@@ -859,6 +917,22 @@
             .clients-table th,
             .clients-table td {
                 padding: 10px;
+            }
+            
+            .trip-card {
+                padding-top: 55px; /* Más espacio en móviles */
+            }
+            
+            /* Corrección para el encabezado de clientes en móviles */
+            .clients-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .clients-header .btn-group {
+                width: 100%;
+                justify-content: flex-start;
             }
         }
 
@@ -873,6 +947,7 @@
 
             .trip-card {
                 padding: 20px;
+                padding-top: 60px; /* Aún más espacio en móviles pequeños */
             }
 
             .trip-title {
@@ -881,6 +956,16 @@
 
             .trip-price {
                 font-size: 1.1rem;
+            }
+            
+            /* Corrección para botones pequeños en móviles */
+            .btn-small {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .clients-header .btn-group {
+                gap: 6px;
             }
         }
 
@@ -972,6 +1057,13 @@
             <!-- Dashboard Section -->
             <div id="dashboard" class="section active">
                 <input type="text" id="searchInput" class="search-box" placeholder="🔍 Buscar viajes o clientes..." onkeyup="filterTrips()">
+                
+                <!-- Botón para mostrar/ocultar resumen -->
+                <div style="text-align: right; margin-bottom: 15px;">
+                    <button class="btn btn-secondary" id="toggleSummaryBtn" onclick="toggleSummary()">
+                        <i class="fas fa-eye"></i> <span id="toggleSummaryText">Ocultar Resumen</span>
+                    </button>
+                </div>
                 
                 <div class="summary-cards" id="summaryCards">
                     <!-- Summary cards will be populated by JavaScript -->
@@ -1068,6 +1160,34 @@
             <!-- Reports Section -->
             <div id="reports" class="section">
                 <h2><i class="fas fa-chart-bar"></i> Reportes y Estadísticas</h2>
+                
+                <!-- Filtro de fechas -->
+                <div style="margin-bottom: 25px; background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h3>Filtrar por Fechas</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reportStartDate">Fecha de Inicio</label>
+                            <input type="date" id="reportStartDate" onchange="updateReport()">
+                        </div>
+                        <div class="form-group">
+                            <label for="reportEndDate">Fecha de Fin</label>
+                            <input type="date" id="reportEndDate" onchange="updateReport()">
+                        </div>
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-secondary" onclick="resetDateFilter()">Restablecer</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gráfica mensual -->
+                <div style="margin-bottom: 30px;">
+                    <h3>Gráfica de Ingresos Mensuales</h3>
+                    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: var(--shadow);">
+                        <canvas id="monthlyChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                
                 <div id="reportsContent">
                     <!-- Reports content will be populated by JavaScript -->
                 </div>
@@ -1341,6 +1461,18 @@
                         </div>
                     </div>
                     
+                    <!-- Campos de descuento agregados -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clientDiscount">Descuento (%)</label>
+                            <input type="number" id="clientDiscount" min="0" max="100" step="0.01" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="clientFinalPrice">Precio Final</label>
+                            <input type="number" id="clientFinalPrice" readonly style="background-color: #f5f5f5;">
+                        </div>
+                    </div>
+                    
                     <div class="checkbox-group">
                         <input type="checkbox" id="clientFood" name="clientFood">
                         <label for="clientFood">Requiere alimentos especiales</label>
@@ -1481,6 +1613,8 @@
         let editingClient = false;
         let editingGlobalClient = false;
         let whatsappImageData = null;
+        let monthlyChart = null;
+        let summaryVisible = true;
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -1498,6 +1632,18 @@
                 const count = this.value.length;
                 document.getElementById('charCount').textContent = count;
                 updateMessagePreview();
+            });
+            
+            // Calcular precio final cuando cambia el descuento
+            document.getElementById('clientDiscount').addEventListener('input', function() {
+                const trip = trips.find(t => t.id === currentTripId);
+                if (!trip) return;
+                
+                const discount = parseFloat(this.value) || 0;
+                const originalPrice = trip.price;
+                const finalPrice = originalPrice * (1 - discount / 100);
+                
+                document.getElementById('clientFinalPrice').value = finalPrice.toFixed(2);
             });
         });
 
@@ -1582,6 +1728,26 @@
             }
         }
 
+        // Toggle summary visibility
+        function toggleSummary() {
+            const summaryCards = document.getElementById('summaryCards');
+            const toggleBtn = document.getElementById('toggleSummaryBtn');
+            const toggleText = document.getElementById('toggleSummaryText');
+            const toggleIcon = toggleBtn.querySelector('i');
+            
+            summaryVisible = !summaryVisible;
+            
+            if (summaryVisible) {
+                summaryCards.classList.remove('hidden');
+                toggleText.textContent = 'Ocultar Resumen';
+                toggleIcon.className = 'fas fa-eye';
+            } else {
+                summaryCards.classList.add('hidden');
+                toggleText.textContent = 'Mostrar Resumen';
+                toggleIcon.className = 'fas fa-eye-slash';
+            }
+        }
+
         // Dashboard rendering
         function renderDashboard() {
             renderSummaryCards();
@@ -1603,8 +1769,9 @@
             }, 0);
             const pendingPayments = trips.reduce((sum, trip) => {
                 const tripPending = trip.clients ? trip.clients.reduce((clientSum, client) => {
+                    const clientPrice = client.finalPrice || trip.price;
                     const totalPaid = client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0;
-                    return clientSum + Math.max(0, trip.price - totalPaid);
+                    return clientSum + Math.max(0, clientPrice - totalPaid);
                 }, 0) : 0;
                 return sum + tripPending;
             }, 0);
@@ -1652,17 +1819,27 @@
             }
 
             container.innerHTML = trips.map(trip => {
-                const clientsCount = trip.clients ? trip.clients.length : 0;
-                const totalPaid = trip.clients ? trip.clients.reduce((sum, client) => {
+                const clients = trip.clients || [];
+                const clientsCount = clients.length;
+                
+                // Calcular totales considerando descuentos
+                const totalExpected = clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0);
+                const totalPaid = clients.reduce((sum, client) => {
                     return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
-                }, 0) : 0;
-                const totalExpected = trip.clients ? trip.clients.length * trip.price : 0;
+                }, 0);
                 const totalPending = totalExpected - totalPaid;
                 const totalExpenses = trip.expenses ? trip.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
                 const netProfit = totalPaid - totalExpenses;
 
                 return `
                     <div class="trip-card">
+                        <div class="trip-status">
+                            ${trip.completed ? 
+                                '<span class="status-badge completed"><i class="fas fa-check-circle"></i> Realizado</span>' : 
+                                '<span class="status-badge pending"><i class="fas fa-clock"></i> Pendiente</span>'
+                            }
+                        </div>
+                        
                         <div class="trip-header">
                             <div>
                                 <div class="trip-title">${trip.name}</div>
@@ -1671,6 +1848,9 @@
                             <div class="trip-actions">
                                 <button class="btn btn-small btn-secondary" onclick="editTrip('${trip.id}')" title="Editar viaje">
                                     <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small ${trip.completed ? 'btn-warning' : 'btn-success'}" onclick="toggleTripCompleted('${trip.id}')" title="${trip.completed ? 'Marcar como no realizado' : 'Marcar como realizado'}">
+                                    <i class="fas ${trip.completed ? 'fa-undo' : 'fa-check'}"></i>
                                 </button>
                                 <button class="btn btn-small btn-danger" onclick="deleteTrip('${trip.id}')" title="Eliminar viaje">
                                     <i class="fas fa-trash"></i>
@@ -1708,7 +1888,7 @@
                         <div class="clients-section">
                             <div class="clients-header">
                                 <h4><i class="fas fa-users"></i> Clientes (${clientsCount})</h4>
-                                <div style="display: flex; gap: 10px;">
+                                <div class="btn-group">
                                     <button class="btn btn-small btn-primary" onclick="addExistingClientToTrip('${trip.id}')" title="Agregar cliente existente">
                                         <i class="fas fa-user-plus"></i> Agregar
                                     </button>
@@ -1738,18 +1918,23 @@
                                         </span>
                                     </div>
                                 </div>
-                                ${trip.clients.slice(0, 3).map(client => {
+                                ${clients.slice(0, 3).map(client => {
+                                    const clientPrice = client.finalPrice || trip.price;
                                     const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
-                                    const clientPending = trip.price - clientPaid;
+                                    const clientPending = clientPrice - clientPaid;
+                                    const hasDiscount = client.discount && client.discount > 0;
+
                                     return `
                                         <div class="client-item">
                                             <div class="client-name">${client.name}</div>
                                             <div class="client-payment">
+                                                Precio: ${hasDiscount ? `<span style="text-decoration: line-through; color: #999;">${formatCurrency(trip.price)}</span> ` : ''}${formatCurrency(clientPrice)} | 
                                                 Pagado: ${formatCurrency(clientPaid)} | 
                                                 <span class="${clientPending > 0 ? 'payment-pending' : 'payment-complete'}">
                                                     Pendiente: ${formatCurrency(clientPending)}
                                                 </span>
                                                 ${client.food ? `<span style="color: #ff9800; margin-left: 5px;"><i class="fas fa-utensils"></i></span>` : ''}
+                                                ${hasDiscount ? `<span style="color: #f44336; margin-left: 5px;"><i class="fas fa-tag"></i></span>` : ''}
                                             </div>
                                         </div>
                                     `;
@@ -1792,6 +1977,17 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // Toggle trip completed status
+        function toggleTripCompleted(tripId) {
+            const trip = trips.find(t => t.id === tripId);
+            if (!trip) return;
+
+            trip.completed = !trip.completed;
+            saveData();
+            renderDashboard();
+            showNotification(trip.completed ? 'Viaje marcado como realizado' : 'Viaje marcado como no realizado', 'success');
         }
 
         // Global Clients Management
@@ -2035,7 +2231,8 @@
                 endDate: document.getElementById('tripEndDate').value,
                 price: parseFloat(document.getElementById('tripPrice').value),
                 description: document.getElementById('tripDescription').value.trim(),
-                images: document.getElementById('tripImages').value.split(',').map(url => url.trim()).filter(url => url)
+                images: document.getElementById('tripImages').value.split(',').map(url => url.trim()).filter(url => url),
+                completed: false // Por defecto, los viajes no están completados
             };
 
             // Validation
@@ -2044,8 +2241,9 @@
                 return;
             }
 
-            if (new Date(formData.startDate) >= new Date(formData.endDate)) {
-                showNotification('La fecha de inicio debe ser anterior a la fecha de fin', 'error');
+            // Modificación: Permitir misma fecha de inicio y fin
+            if (new Date(formData.startDate) > new Date(formData.endDate)) {
+                showNotification('La fecha de inicio debe ser anterior o igual a la fecha de fin', 'error');
                 return;
             }
 
@@ -2163,6 +2361,8 @@
                 phone: globalClient.phone,
                 food: globalClient.food,
                 notes: globalClient.notes,
+                discount: 0, // Sin descuento por defecto
+                finalPrice: trip.price, // Precio original por defecto
                 payments: [],
                 createdAt: new Date().toISOString()
             };
@@ -2198,7 +2398,7 @@
             const clientsContainer = document.getElementById('clientsContent');
             const clients = trip.clients || [];
             
-            const totalExpected = clients.length * trip.price;
+            const totalExpected = clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0);
             const totalPaid = clients.reduce((sum, client) => {
                 return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
             }, 0);
@@ -2236,9 +2436,11 @@
 
                 <div style="max-height: 400px; overflow-y: auto;">
                     ${clients.length > 0 ? clients.map(client => {
+                        const clientPrice = client.finalPrice || trip.price;
                         const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
-                        const clientPending = trip.price - clientPaid;
+                        const clientPending = clientPrice - clientPaid;
                         const paymentCount = client.payments ? client.payments.length : 0;
+                        const hasDiscount = client.discount && client.discount > 0;
 
                         return `
                             <div class="client-item" style="margin-bottom: 15px;">
@@ -2248,6 +2450,7 @@
                                         ${client.email ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope"></i> ${client.email}</div>` : ''}
                                         ${client.phone ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-phone"></i> ${client.phone}</div>` : ''}
                                         ${client.food ? `<div style="color: #ff9800; font-size: 0.9rem;"><i class="fas fa-utensils"></i> Requiere alimentos especiales</div>` : ''}
+                                        ${hasDiscount ? `<div style="color: #f44336; font-size: 0.9rem;"><i class="fas fa-tag"></i> Descuento: ${client.discount}%</div>` : ''}
                                     </div>
                                     <div style="display: flex; gap: 5px;">
                                         <button class="btn btn-small btn-secondary" onclick="editClient('${client.id}')" title="Editar cliente">
@@ -2261,16 +2464,26 @@
                                 
                                 <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: center; margin-bottom: 12px;">
                                     <div>
-                                        <small style="color: var(--gray);">Pagado:</small><br>
-                                        <span style="font-weight: bold; color: #4CAF50;">${formatCurrency(clientPaid)}</span>
+                                        <small style="color: var(--gray);">Precio:</small><br>
+                                        <span style="font-weight: bold; color: #2196F3;">
+                                            ${hasDiscount ? `<span style="text-decoration: line-through; color: #999; font-size: 0.9em;">${formatCurrency(trip.price)}</span> ` : ''}
+                                            ${formatCurrency(clientPrice)}
+                                        </span>
                                     </div>
                                     <div>
-                                        <small style="color: var(--gray);">Pendiente:</small><br>
-                                        <span style="font-weight: bold; color: ${clientPending > 0 ? '#f44336' : '#4CAF50'};">${formatCurrency(clientPending)}</span>
+                                        <small style="color: var(--gray);">Pagado:</small><br>
+                                        <span style="font-weight: bold; color: #4CAF50;">${formatCurrency(clientPaid)}</span>
                                     </div>
                                     <button class="btn btn-small btn-primary" onclick="showPaymentModal('${client.id}')">
                                         <i class="fas fa-plus"></i> Abono
                                     </button>
+                                </div>
+
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div>
+                                        <small style="color: var(--gray);">Pendiente:</small><br>
+                                        <span style="font-weight: bold; color: ${clientPending > 0 ? '#f44336' : '#4CAF50'};">${formatCurrency(clientPending)}</span>
+                                    </div>
                                 </div>
 
                                 ${clientPending > 0 ? `
@@ -2323,6 +2536,15 @@
             editingClient = false;
             document.getElementById('clientFormModalTitle').textContent = 'Nuevo Cliente';
             document.getElementById('clientForm').reset();
+            document.getElementById('clientDiscount').value = 0;
+            document.getElementById('clientFinalPrice').value = '';
+            
+            // Obtener el precio del viaje actual
+            const trip = trips.find(t => t.id === currentTripId);
+            if (trip) {
+                document.getElementById('clientFinalPrice').value = trip.price.toFixed(2);
+            }
+            
             document.getElementById('clientFormModal').style.display = 'block';
         }
 
@@ -2343,6 +2565,8 @@
             document.getElementById('clientDocument').value = client.document || '';
             document.getElementById('clientFood').checked = client.food || false;
             document.getElementById('clientNotes').value = client.notes || '';
+            document.getElementById('clientDiscount').value = client.discount || 0;
+            document.getElementById('clientFinalPrice').value = client.finalPrice || trip.price;
             
             document.getElementById('clientFormModal').style.display = 'block';
         }
@@ -2381,9 +2605,11 @@
                 name: document.getElementById('clientName').value.trim(),
                 email: document.getElementById('clientEmail').value.trim(),
                 phone: document.getElementById('clientPhone').value.trim(),
-                document: document.getElementById('clientDocument').value.trim(),
+                document: client.document ? document.getElementById('clientDocument').value.trim() : '',
                 food: document.getElementById('clientFood').checked,
-                notes: document.getElementById('clientNotes').value.trim()
+                notes: document.getElementById('clientNotes').value.trim(),
+                discount: parseFloat(document.getElementById('clientDiscount').value) || 0,
+                finalPrice: parseFloat(document.getElementById('clientFinalPrice').value) || trip.price
             };
 
             if (!formData.name) {
@@ -2783,8 +3009,9 @@
             const client = trip.clients.find(c => c.id === clientId);
             if (!client) return;
 
+            const clientPrice = client.finalPrice || trip.price;
             const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
-            const clientPending = trip.price - clientPaid;
+            const clientPending = clientPrice - clientPaid;
 
             if (clientPending <= 0) {
                 showNotification('Este cliente no tiene pagos pendientes', 'warning');
@@ -2825,13 +3052,16 @@
                 if (client.phone) clientsList += `   Tel: ${client.phone}\n`;
                 if (client.email) clientsList += `   Email: ${client.email}\n`;
                 
+                const clientPrice = client.finalPrice || trip.price;
                 const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
-                const clientPending = trip.price - clientPaid;
+                const clientPending = clientPrice - clientPaid;
                 
-                clientsList += `   Pagado: ${formatCurrency(clientPaid)} | `;
-                clientsList += `Pendiente: ${formatCurrency(clientPending)}\n`;
+                clientsList += `   Precio: ${formatCurrency(clientPrice)}\n`;
+                clientsList += `   Pagado: ${formatCurrency(clientPaid)}\n`;
+                clientsList += `   Pendiente: ${formatCurrency(clientPending)}\n`;
                 
                 if (client.food) clientsList += `   Requiere alimentos especiales\n`;
+                if (client.discount && client.discount > 0) clientsList += `   Descuento aplicado: ${client.discount}%\n`;
                 
                 clientsList += `\n`;
             });
@@ -2841,10 +3071,11 @@
             const totalPaid = trip.clients.reduce((sum, client) => {
                 return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
             }, 0);
-            const totalExpected = trip.clients.length * trip.price;
+            const totalExpected = trip.clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0);
             const totalPending = totalExpected - totalPaid;
             
             clientsList += `Total recaudado: ${formatCurrency(totalPaid)}\n`;
+            clientsList += `Total esperado: ${formatCurrency(totalExpected)}\n`;
             clientsList += `Total pendiente: ${formatCurrency(totalPending)}\n\n`;
             clientsList += `Generado por Nómadas Tours - Sistema de Gestión`;
 
@@ -2861,35 +3092,61 @@
 
         // Reports functionality
         function renderReports() {
+            updateReport();
+        }
+
+        function updateReport() {
             const reportsContainer = document.getElementById('reportsContent');
             
+            // Get date filter values
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            // Filter trips based on date range
+            let filteredTrips = trips;
+            if (startDate || endDate) {
+                filteredTrips = trips.filter(trip => {
+                    const tripStartDate = new Date(trip.startDate);
+                    const tripEndDate = new Date(trip.endDate);
+                    
+                    if (startDate && endDate) {
+                        return tripStartDate >= new Date(startDate) && tripEndDate <= new Date(endDate);
+                    } else if (startDate) {
+                        return tripStartDate >= new Date(startDate);
+                    } else if (endDate) {
+                        return tripEndDate <= new Date(endDate);
+                    }
+                    return true;
+                });
+            }
+            
             // Calculate statistics
-            const totalTrips = trips.length;
-            const totalClients = trips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
-            const totalRevenue = trips.reduce((sum, trip) => {
+            const totalTrips = filteredTrips.length;
+            const totalClients = filteredTrips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
+            const totalRevenue = filteredTrips.reduce((sum, trip) => {
                 const tripPayments = trip.clients ? trip.clients.reduce((clientSum, client) => {
                     return clientSum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
                 }, 0) : 0;
                 return sum + tripPayments;
             }, 0);
-            const totalExpenses = trips.reduce((sum, trip) => {
+            const totalExpenses = filteredTrips.reduce((sum, trip) => {
                 return sum + (trip.expenses ? trip.expenses.reduce((expenseSum, expense) => expenseSum + expense.amount, 0) : 0);
             }, 0);
             const netProfit = totalRevenue - totalExpenses;
             
             // Get trips sorted by date (newest first)
-            const sortedTrips = [...trips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+            const sortedTrips = [...filteredTrips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
             
             // Get top destinations
             const destinations = {};
-            trips.forEach(trip => {
+            filteredTrips.forEach(trip => {
                 if (destinations[trip.destination]) {
                     destinations[trip.destination].count++;
-                    destinations[trip.destination].revenue += trip.clients ? trip.clients.length * trip.price : 0;
+                    destinations[trip.destination].revenue += trip.clients ? trip.clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0) : 0;
                 } else {
                     destinations[trip.destination] = {
                         count: 1,
-                        revenue: trip.clients ? trip.clients.length * trip.price : 0
+                        revenue: trip.clients ? trip.clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0) : 0
                     };
                 }
             });
@@ -2900,7 +3157,7 @@
             
             // Get payment methods statistics
             const paymentMethods = {};
-            trips.forEach(trip => {
+            filteredTrips.forEach(trip => {
                 if (trip.clients) {
                     trip.clients.forEach(client => {
                         if (client.payments) {
@@ -2922,7 +3179,7 @@
             
             // Get expense categories statistics
             const expenseCategories = {};
-            trips.forEach(trip => {
+            filteredTrips.forEach(trip => {
                 if (trip.expenses) {
                     trip.expenses.forEach(expense => {
                         if (expenseCategories[expense.category]) {
@@ -3077,7 +3334,7 @@
                                     const totalPaid = trip.clients ? trip.clients.reduce((sum, client) => {
                                         return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
                                     }, 0) : 0;
-                                    const totalExpected = trip.clients ? trip.clients.length * trip.price : 0;
+                                    const totalExpected = trip.clients ? trip.clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0) : 0;
                                     const totalPending = totalExpected - totalPaid;
                                     const tripExpenses = trip.expenses ? trip.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
                                     const tripNetProfit = totalPaid - tripExpenses;
@@ -3112,23 +3369,148 @@
                     </button>
                 </div>
             `;
+            
+            // Update monthly chart
+            updateMonthlyChart(filteredTrips);
+        }
+
+        function updateMonthlyChart(filteredTrips) {
+            const ctx = document.getElementById('monthlyChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (monthlyChart) {
+                monthlyChart.destroy();
+            }
+            
+            // Calculate monthly revenue
+            const monthlyRevenue = {};
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            
+            // Initialize all months with 0 revenue
+            for (let i = 0; i < 12; i++) {
+                const month = i + 1;
+                monthlyRevenue[`${currentYear}-${month.toString().padStart(2, '0')}`] = 0;
+            }
+            
+            // Calculate revenue for each trip
+            filteredTrips.forEach(trip => {
+                if (trip.clients) {
+                    trip.clients.forEach(client => {
+                        if (client.payments) {
+                            client.payments.forEach(payment => {
+                                const paymentDate = new Date(payment.date);
+                                const paymentYear = paymentDate.getFullYear();
+                                const paymentMonth = (paymentDate.getMonth() + 1).toString().padStart(2, '0');
+                                const key = `${paymentYear}-${paymentMonth}`;
+                                
+                                if (monthlyRevenue[key] !== undefined) {
+                                    monthlyRevenue[key] += payment.amount;
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Prepare data for chart
+            const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const data = labels.map((label, index) => {
+                const month = (index + 1).toString().padStart(2, '0');
+                const key = `${currentYear}-${month}`;
+                return monthlyRevenue[key] || 0;
+            });
+            
+            // Create new chart
+            monthlyChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ingresos',
+                        data: data,
+                        backgroundColor: 'rgba(67, 97, 238, 0.6)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Ingresos: ' + formatCurrency(context.raw);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function resetDateFilter() {
+            document.getElementById('reportStartDate').value = '';
+            document.getElementById('reportEndDate').value = '';
+            updateReport();
         }
 
         function exportReport() {
+            // Get date filter values
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            // Filter trips based on date range
+            let filteredTrips = trips;
+            if (startDate || endDate) {
+                filteredTrips = trips.filter(trip => {
+                    const tripStartDate = new Date(trip.startDate);
+                    const tripEndDate = new Date(trip.endDate);
+                    
+                    if (startDate && endDate) {
+                        return tripStartDate >= new Date(startDate) && tripEndDate <= new Date(endDate);
+                    } else if (startDate) {
+                        return tripStartDate >= new Date(startDate);
+                    } else if (endDate) {
+                        return tripEndDate <= new Date(endDate);
+                    }
+                    return true;
+                });
+            }
+            
             // Create a simple text report
             let report = "REPORTE DE NÓMADAS TOURS\n";
             report += "=========================\n\n";
             
+            if (startDate || endDate) {
+                report += "FILTRO DE FECHAS\n";
+                report += "----------------\n";
+                if (startDate) report += `Fecha de inicio: ${formatDate(startDate)}\n`;
+                if (endDate) report += `Fecha de fin: ${formatDate(endDate)}\n`;
+                report += "\n";
+            }
+            
             // Calculate statistics
-            const totalTrips = trips.length;
-            const totalClients = trips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
-            const totalRevenue = trips.reduce((sum, trip) => {
+            const totalTrips = filteredTrips.length;
+            const totalClients = filteredTrips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
+            const totalRevenue = filteredTrips.reduce((sum, trip) => {
                 const tripPayments = trip.clients ? trip.clients.reduce((clientSum, client) => {
                     return clientSum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
                 }, 0) : 0;
                 return sum + tripPayments;
             }, 0);
-            const totalExpenses = trips.reduce((sum, trip) => {
+            const totalExpenses = filteredTrips.reduce((sum, trip) => {
                 return sum + (trip.expenses ? trip.expenses.reduce((expenseSum, expense) => expenseSum + expense.amount, 0) : 0);
             }, 0);
             const netProfit = totalRevenue - totalExpenses;
@@ -3142,7 +3524,7 @@
             report += `Ganancia Neta: ${formatCurrency(netProfit)}\n\n`;
             
             // Get trips sorted by date (newest first)
-            const sortedTrips = [...trips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+            const sortedTrips = [...filteredTrips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
             
             report += "ÚLTIMOS VIAJES\n";
             report += "--------------\n";
@@ -3153,7 +3535,7 @@
                     const totalPaid = trip.clients ? trip.clients.reduce((sum, client) => {
                         return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
                     }, 0) : 0;
-                    const totalExpected = trip.clients ? trip.clients.length * trip.price : 0;
+                    const totalExpected = trip.clients ? trip.clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0) : 0;
                     const totalPending = totalExpected - totalPaid;
                     const tripExpenses = trip.expenses ? trip.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
                     const tripNetProfit = totalPaid - tripExpenses;
@@ -3164,6 +3546,7 @@
                     report += `Precio por persona: ${formatCurrency(trip.price)}\n`;
                     report += `Número de clientes: ${clientsCount}\n`;
                     report += `Total recaudado: ${formatCurrency(totalPaid)}\n`;
+                    report += `Total esperado: ${formatCurrency(totalExpected)}\n`;
                     report += `Total pendiente: ${formatCurrency(totalPending)}\n`;
                     report += `Gastos del viaje: ${formatCurrency(tripExpenses)}\n`;
                     report += `Ganancia neta: ${formatCurrency(tripNetProfit)}\n`;
