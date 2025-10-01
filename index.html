@@ -9,8 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a0ca3;
+            --primary: #047698; /* Cambiado de morado a #047698 */
+            --primary-dark: #03637d; /* Un tono más oscuro del nuevo color */
             --secondary: #4cc9f0;
             --success: #4caf50;
             --warning: #ff9800;
@@ -30,7 +30,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #047698 0%, #03637d 100%); /* Cambiado a los nuevos tonos */
             min-height: 100vh;
             color: var(--dark);
         }
@@ -116,7 +116,7 @@
         }
 
         .btn-secondary {
-            background: linear-gradient(45deg, #3a86ff, #4361ee);
+            background: linear-gradient(45deg, #3a86ff, #047698); /* Cambiado a tonos del nuevo color */
             color: white;
         }
 
@@ -136,7 +136,7 @@
         }
 
         .btn-tools {
-            background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+            background: linear-gradient(45deg, #047698, #03637d); /* Cambiado al nuevo color */
             color: white;
         }
 
@@ -194,7 +194,7 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1); /* Cambiado al nuevo color */
         }
 
         .form-row {
@@ -216,7 +216,7 @@
         .search-box:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1); /* Cambiado al nuevo color */
         }
 
         .summary-cards {
@@ -239,6 +239,12 @@
             text-align: center;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            /* Añadido para evitar que el contenido se desborde */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .summary-card:hover {
@@ -250,11 +256,19 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 700;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
 
         .summary-card p {
             opacity: 0.9;
             font-size: 1rem;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
 
         .trips-grid {
@@ -304,6 +318,9 @@
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 5px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .trip-destination {
@@ -312,6 +329,9 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .trip-actions {
@@ -340,6 +360,9 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .trip-price {
@@ -353,6 +376,9 @@
             color: var(--gray);
             line-height: 1.6;
             margin-bottom: 15px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .trip-status {
@@ -431,11 +457,17 @@
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 8px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .client-payment {
             font-size: 0.95rem;
             color: var(--gray);
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .payment-pending {
@@ -576,6 +608,9 @@
         .expense-description {
             font-weight: 600;
             color: var(--dark);
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .expense-amount {
@@ -738,6 +773,9 @@
             font-weight: 600;
             margin-bottom: 5px;
             color: var(--dark);
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .recipient-phone {
@@ -764,6 +802,9 @@
             color: var(--gray);
             line-height: 1.6;
             font-size: 0.95rem;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .selected-count {
@@ -801,7 +842,7 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(90deg, #9C27B0, #7B1FA2);
+            background: linear-gradient(90deg, #047698, #03637d); /* Cambiado al nuevo color */
         }
 
         .tool-card:hover {
@@ -811,7 +852,7 @@
 
         .tool-icon {
             font-size: 3.5rem;
-            color: #9C27B0;
+            color: #047698; /* Cambiado al nuevo color */
             margin-bottom: 20px;
         }
 
@@ -820,12 +861,18 @@
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 12px;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .tool-description {
             color: var(--gray);
             margin-bottom: 25px;
             line-height: 1.6;
+            /* Añadido para evitar que el texto se desborde */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .tool-actions {
@@ -2972,8 +3019,28 @@
                 return globalClients.find(client => client.id === clientId);
             }).filter(client => client); // Filter out any undefined clients
             
-            // Open WhatsApp Web for each client
-            selectedClients.forEach(client => {
+            // Modificado para manejar el envío secuencial con imágenes
+            let currentIndex = 0;
+            
+            function sendNextMessage() {
+                if (currentIndex >= selectedClients.length) {
+                    showNotification(`Se abrieron ${selectedClients.length} conversaciones de WhatsApp`, 'success');
+                    
+                    // Reset form
+                    document.getElementById('whatsappMessage').value = '';
+                    document.getElementById('charCount').textContent = '0';
+                    removeWhatsAppImage();
+                    updateMessagePreview();
+                    
+                    // Uncheck all checkboxes
+                    document.getElementById('selectAllClients').checked = false;
+                    toggleAllClients();
+                    
+                    return;
+                }
+                
+                const client = selectedClients[currentIndex];
+                
                 // Format phone number (remove any non-digit characters)
                 let phoneNumber = client.phone.replace(/\D/g, '');
                 
@@ -2987,19 +3054,21 @@
                 
                 // Open in new window/tab
                 window.open(whatsappUrl, '_blank');
-            });
+                
+                // Si hay una imagen, mostrar instrucciones para adjuntarla manualmente
+                if (whatsappImageData) {
+                    setTimeout(() => {
+                        showNotification(`Por favor adjunta la imagen manualmente en la conversación con ${client.name}`, 'warning');
+                    }, 1000);
+                }
+                
+                currentIndex++;
+                
+                // Esperar un momento antes de abrir la siguiente conversación
+                setTimeout(sendNextMessage, 2000);
+            }
             
-            showNotification(`Se abrieron ${selectedClients.length} conversaciones de WhatsApp`, 'success');
-            
-            // Reset form
-            document.getElementById('whatsappMessage').value = '';
-            document.getElementById('charCount').textContent = '0';
-            removeWhatsAppImage();
-            updateMessagePreview();
-            
-            // Uncheck all checkboxes
-            document.getElementById('selectAllClients').checked = false;
-            toggleAllClients();
+            sendNextMessage();
         }
 
         function sendWhatsAppReminder(clientId) {
