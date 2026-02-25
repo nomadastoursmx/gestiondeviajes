@@ -278,6 +278,44 @@
             margin-top: 30px;
         }
 
+        .trips-list {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .trips-list.active {
+            display: block;
+        }
+
+        .trips-list table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .trips-list th,
+        .trips-list td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .trips-list th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .trips-list tr:hover {
+            background-color: #f8f9fa;
+        }
+
         .trip-card {
             background: white;
             border-radius: 15px;
@@ -899,6 +937,85 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
+        /* Estilos para la vista de lista y filtros */
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .view-toggle button {
+            padding: 8px 15px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .view-toggle button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .view-toggle button:hover:not(.active) {
+            background: rgba(4, 118, 152, 0.1);
+        }
+
+        .filter-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .filter-container.active {
+            display: block;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-header h3 {
+            margin: 0;
+            color: var(--dark);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .trip-list-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .trip-list-actions button {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -981,6 +1098,18 @@
                 width: 100%;
                 justify-content: flex-start;
             }
+
+            .filter-row {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .trips-list {
+                overflow-x: auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1013,6 +1142,10 @@
             
             .clients-header .btn-group {
                 gap: 6px;
+            }
+
+            .view-toggle {
+                flex-direction: column;
             }
         }
 
@@ -1116,8 +1249,84 @@
                     <!-- Summary cards will be populated by JavaScript -->
                 </div>
 
+                <!-- Toggle de vista y filtros -->
+                <div class="view-toggle">
+                    <button id="gridViewBtn" class="active" onclick="setView('grid')">
+                        <i class="fas fa-th"></i> Vista de Tarjetas
+                    </button>
+                    <button id="listViewBtn" onclick="setView('list')">
+                        <i class="fas fa-list"></i> Vista de Lista
+                    </button>
+                    <button id="filterToggleBtn" onclick="toggleFilters()">
+                        <i class="fas fa-filter"></i> Filtros
+                    </button>
+                </div>
+
+                <!-- Contenedor de filtros -->
+                <div class="filter-container" id="filterContainer">
+                    <div class="filter-header">
+                        <h3><i class="fas fa-filter"></i> Filtros Avanzados</h3>
+                        <button class="btn btn-small btn-secondary" onclick="resetFilters()">
+                            <i class="fas fa-redo"></i> Restablecer
+                        </button>
+                    </div>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="filterDestination">Destino</label>
+                            <select id="filterDestination" onchange="applyFilters()">
+                                <option value="">Todos los destinos</option>
+                                <!-- Opciones se llenarán dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterStatus">Estado</label>
+                            <select id="filterStatus" onchange="applyFilters()">
+                                <option value="">Todos los estados</option>
+                                <option value="completed">Realizados</option>
+                                <option value="pending">Pendientes</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterDateFrom">Fecha Desde</label>
+                            <input type="date" id="filterDateFrom" onchange="applyFilters()">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterDateTo">Fecha Hasta</label>
+                            <input type="date" id="filterDateTo" onchange="applyFilters()">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterPriceMin">Precio Mínimo</label>
+                            <input type="number" id="filterPriceMin" min="0" step="0.01" onchange="applyFilters()">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterPriceMax">Precio Máximo</label>
+                            <input type="number" id="filterPriceMax" min="0" step="0.01" onchange="applyFilters()">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="trips-grid" id="tripsContainer">
                     <!-- Trip cards will be populated by JavaScript -->
+                </div>
+
+                <div class="trips-list" id="tripsListContainer">
+                    <table id="tripsTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Viaje</th>
+                                <th>Destino</th>
+                                <th>Fechas</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Clientes</th>
+                                <th>Ganancia</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tripsTableBody">
+                            <!-- Trip rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1662,6 +1871,8 @@
         let whatsappImageData = null;
         let monthlyChart = null;
         let summaryVisible = true;
+        let currentView = 'grid'; // 'grid' o 'list'
+        let filteredTrips = [...trips]; // Viajes filtrados actualmente
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -1669,6 +1880,7 @@
             renderDashboard();
             renderGlobalClients();
             renderWhatsAppRecipients();
+            populateFilterOptions();
             
             // Set today's date as default for payment date
             document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
@@ -1712,6 +1924,9 @@
             if (savedGlobalClients) {
                 globalClients = JSON.parse(savedGlobalClients);
             }
+            
+            // Inicializar filteredTrips con todos los viajes
+            filteredTrips = [...trips];
         }
 
         // Utility functions
@@ -1795,10 +2010,144 @@
             }
         }
 
+        // View toggle functions
+        function setView(viewType) {
+            currentView = viewType;
+            
+            const gridBtn = document.getElementById('gridViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+            const gridView = document.getElementById('tripsContainer');
+            const listView = document.getElementById('tripsListContainer');
+            const filterContainer = document.getElementById('filterContainer');
+            
+            if (viewType === 'grid') {
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+                gridView.style.display = 'grid';
+                listView.classList.remove('active');
+                filterContainer.classList.remove('active');
+            } else {
+                gridBtn.classList.remove('active');
+                listBtn.classList.add('active');
+                gridView.style.display = 'none';
+                listView.classList.add('active');
+            }
+            
+            // Render the appropriate view
+            if (viewType === 'grid') {
+                renderTripsGrid();
+            } else {
+                renderTripsList();
+            }
+        }
+
+        function toggleFilters() {
+            const filterContainer = document.getElementById('filterContainer');
+            const filterBtn = document.getElementById('filterToggleBtn');
+            
+            if (filterContainer.classList.contains('active')) {
+                filterContainer.classList.remove('active');
+                filterBtn.classList.remove('active');
+            } else {
+                filterContainer.classList.add('active');
+                filterBtn.classList.add('active');
+            }
+        }
+
+        function populateFilterOptions() {
+            // Llenar el selector de destinos
+            const destinationSelect = document.getElementById('filterDestination');
+            const destinations = [...new Set(trips.map(trip => trip.destination))];
+            
+            destinationSelect.innerHTML = '<option value="">Todos los destinos</option>';
+            destinations.forEach(destination => {
+                const option = document.createElement('option');
+                option.value = destination;
+                option.textContent = destination;
+                destinationSelect.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            const destination = document.getElementById('filterDestination').value;
+            const status = document.getElementById('filterStatus').value;
+            const dateFrom = document.getElementById('filterDateFrom').value;
+            const dateTo = document.getElementById('filterDateTo').value;
+            const priceMin = parseFloat(document.getElementById('filterPriceMin').value) || 0;
+            const priceMax = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
+            
+            // Aplicar filtros
+            filteredTrips = trips.filter(trip => {
+                // Filtro de destino
+                if (destination && trip.destination !== destination) return false;
+                
+                // Filtro de estado
+                if (status) {
+                    const isCompleted = status === 'completed';
+                    if (trip.completed !== isCompleted) return false;
+                }
+                
+                // Filtro de fechas
+                if (dateFrom && new Date(trip.startDate) < new Date(dateFrom)) return false;
+                if (dateTo && new Date(trip.endDate) > new Date(dateTo)) return false;
+                
+                // Filtro de precio
+                if (trip.price < priceMin || trip.price > priceMax) return false;
+                
+                return true;
+            });
+            
+            // Aplicar también el filtro de búsqueda si hay texto
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filteredTrips = filteredTrips.filter(trip => {
+                    const text = `${trip.name} ${trip.destination}`.toLowerCase();
+                    return text.includes(searchTerm);
+                });
+            }
+            
+            // Actualizar la vista actual
+            if (currentView === 'grid') {
+                renderTripsGrid();
+            } else {
+                renderTripsList();
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('filterDestination').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterDateFrom').value = '';
+            document.getElementById('filterDateTo').value = '';
+            document.getElementById('filterPriceMin').value = '';
+            document.getElementById('filterPriceMax').value = '';
+            
+            // Restablecer filteredTrips a todos los viajes
+            filteredTrips = [...trips];
+            
+            // Aplicar el filtro de búsqueda si hay texto
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                filteredTrips = filteredTrips.filter(trip => {
+                    const text = `${trip.name} ${trip.destination}`.toLowerCase();
+                    return text.includes(searchTerm);
+                });
+            }
+            
+            // Actualizar la vista actual
+            if (currentView === 'grid') {
+                renderTripsGrid();
+            } else {
+                renderTripsList();
+            }
+            
+            showNotification('Filtros restablecidos', 'success');
+        }
+
         // Dashboard rendering
         function renderDashboard() {
             renderSummaryCards();
-            renderTrips();
+            renderTripsGrid();
         }
 
         function renderSummaryCards() {
@@ -1851,21 +2200,21 @@
             `;
         }
 
-        function renderTrips() {
+        function renderTripsGrid() {
             const container = document.getElementById('tripsContainer');
             
-            if (trips.length === 0) {
+            if (filteredTrips.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state" style="grid-column: 1 / -1;">
                         <i class="fas fa-suitcase-rolling"></i>
-                        <h3>No hay viajes registrados</h3>
-                        <p>Comienza creando tu primer viaje haciendo clic en "Nuevo Viaje"</p>
+                        <h3>No hay viajes que coincidan con los filtros</h3>
+                        <p>Intenta ajustar los filtros o crear un nuevo viaje</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = trips.map(trip => {
+            container.innerHTML = filteredTrips.map(trip => {
                 const clients = trip.clients || [];
                 const clientsCount = clients.length;
                 
@@ -2022,6 +2371,77 @@
                             `}
                         </div>
                     </div>
+                `;
+            }).join('');
+        }
+
+        function renderTripsList() {
+            const tableBody = document.getElementById('tripsTableBody');
+            
+            if (filteredTrips.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray);">
+                            <div class="empty-state" style="padding: 0;">
+                                <i class="fas fa-suitcase-rolling"></i>
+                                <h3>No hay viajes que coincidan con los filtros</h3>
+                                <p>Intenta ajustar los filtros o crear un nuevo viaje</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = filteredTrips.map(trip => {
+                const clients = trip.clients || [];
+                const clientsCount = clients.length;
+                
+                // Calcular totales considerando descuentos
+                const totalPaid = clients.reduce((sum, client) => {
+                    return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
+                }, 0);
+                const totalExpenses = trip.expenses ? trip.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
+                const netProfit = totalPaid - totalExpenses;
+
+                return `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 600;">${trip.name}</div>
+                            ${trip.completed ? '<span class="status-badge completed" style="margin-top: 5px;"><i class="fas fa-check-circle"></i> Realizado</span>' : '<span class="status-badge pending" style="margin-top: 5px;"><i class="fas fa-clock"></i> Pendiente</span>'}
+                        </td>
+                        <td>${trip.destination}</td>
+                        <td>${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}</td>
+                        <td>${formatCurrency(trip.price)}</td>
+                        <td>
+                            <span class="${trip.completed ? 'payment-complete' : 'payment-pending'}" style="font-weight: 600;">
+                                ${trip.completed ? 'Realizado' : 'Pendiente'}
+                            </span>
+                        </td>
+                        <td>${clientsCount}</td>
+                        <td style="color: ${netProfit >= 0 ? '#4CAF50' : '#f44336'}; font-weight: 600;">
+                            ${formatCurrency(netProfit)}
+                        </td>
+                        <td>
+                            <div class="trip-list-actions">
+                                <button class="btn btn-small btn-primary" onclick="editTrip('${trip.id}')" title="Editar viaje">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small ${trip.completed ? 'btn-warning' : 'btn-success'}" onclick="toggleTripCompleted('${trip.id}')" title="${trip.completed ? 'Marcar como no realizado' : 'Marcar como realizado'}">
+                                    <i class="fas ${trip.completed ? 'fa-undo' : 'fa-check'}"></i>
+                                </button>
+                                <button class="btn btn-small btn-primary" onclick="manageClients('${trip.id}')" title="Gestionar clientes">
+                                    <i class="fas fa-users"></i>
+                                </button>
+                                <button class="btn btn-small btn-warning" onclick="manageExpenses('${trip.id}')" title="Gestionar gastos">
+                                    <i class="fas fa-receipt"></i>
+                                </button>
+                                <button class="btn btn-small btn-danger" onclick="deleteTrip('${trip.id}')" title="Eliminar viaje">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 `;
             }).join('');
         }
@@ -2320,6 +2740,7 @@
             saveData();
             closeTripModal();
             renderDashboard();
+            populateFilterOptions(); // Actualizar opciones de filtros
         });
 
         // Add existing client to trip
@@ -3669,6 +4090,7 @@
                     saveData();
                     renderDashboard();
                     renderGlobalClients();
+                    populateFilterOptions();
                     showNotification('Datos importados exitosamente', 'success');
                 } catch (error) {
                     showNotification('Error al procesar el archivo. Verifica que sea un JSON válido.', 'error');
@@ -3835,6 +4257,7 @@
                         saveData();
                         renderDashboard();
                         renderGlobalClients();
+                        populateFilterOptions();
                         showNotification('Respaldo restaurado exitosamente', 'success');
                     }
                 } catch (error) {
@@ -3851,16 +4274,24 @@
         // Filter trips in dashboard
         function filterTrips() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const tripCards = document.querySelectorAll('.trip-card');
             
-            tripCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                if (text.includes(searchTerm)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            // Actualizar filteredTrips con todos los viajes
+            filteredTrips = [...trips];
+            
+            // Aplicar filtros si hay texto de búsqueda
+            if (searchTerm) {
+                filteredTrips = filteredTrips.filter(trip => {
+                    const text = `${trip.name} ${trip.destination}`.toLowerCase();
+                    return text.includes(searchTerm);
+                });
+            }
+            
+            // Actualizar la vista actual
+            if (currentView === 'grid') {
+                renderTripsGrid();
+            } else {
+                renderTripsList();
+            }
         }
     </script>
 </body>
