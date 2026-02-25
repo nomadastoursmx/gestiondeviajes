@@ -9,8 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #047698; /* Cambiado de morado a #047698 */
-            --primary-dark: #03637d; /* Un tono más oscuro del nuevo color */
+            --primary: #047698;
+            --primary-dark: #03637d;
             --secondary: #4cc9f0;
             --success: #4caf50;
             --warning: #ff9800;
@@ -30,7 +30,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #047698 0%, #03637d 100%); /* Cambiado a los nuevos tonos */
+            background: linear-gradient(135deg, #047698 0%, #03637d 100%);
             min-height: 100vh;
             color: var(--dark);
         }
@@ -116,7 +116,7 @@
         }
 
         .btn-secondary {
-            background: linear-gradient(45deg, #3a86ff, #047698); /* Cambiado a tonos del nuevo color */
+            background: linear-gradient(45deg, #3a86ff, #047698);
             color: white;
         }
 
@@ -136,7 +136,7 @@
         }
 
         .btn-tools {
-            background: linear-gradient(45deg, #047698, #03637d); /* Cambiado al nuevo color */
+            background: linear-gradient(45deg, #047698, #03637d);
             color: white;
         }
 
@@ -194,7 +194,7 @@
         .form-group select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1); /* Cambiado al nuevo color */
+            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1);
         }
 
         .form-row {
@@ -216,7 +216,7 @@
         .search-box:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1); /* Cambiado al nuevo color */
+            box-shadow: 0 0 0 3px rgba(4, 118, 152, 0.1);
         }
 
         .summary-cards {
@@ -239,7 +239,6 @@
             text-align: center;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            /* Añadido para evitar que el contenido se desborde */
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -256,7 +255,6 @@
             font-size: 2.5rem;
             margin-bottom: 10px;
             font-weight: 700;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
             max-width: 100%;
@@ -265,7 +263,6 @@
         .summary-card p {
             opacity: 0.9;
             font-size: 1rem;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
             max-width: 100%;
@@ -310,6 +307,38 @@
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .trips-list th.sortable {
+            cursor: pointer;
+            user-select: none;
+            padding-right: 30px;
+        }
+
+        .trips-list th.sortable:hover {
+            background-color: #e9ecef;
+        }
+
+        .trips-list th.sortable::after {
+            content: '\f0dc';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .trips-list th.sort-asc::after {
+            content: '\f0de';
+            color: var(--primary);
+        }
+
+        .trips-list th.sort-desc::after {
+            content: '\f0dd';
+            color: var(--primary);
         }
 
         .trips-list tr:hover {
@@ -320,7 +349,7 @@
             background: white;
             border-radius: 15px;
             padding: 25px;
-            padding-top: 45px; /* Espacio adicional para el badge */
+            padding-top: 45px;
             box-shadow: var(--shadow);
             border: 1px solid #f0f0f0;
             transition: var(--transition);
@@ -348,7 +377,7 @@
             justify-content: space-between;
             align-items: start;
             margin-bottom: 15px;
-            margin-top: 10px; /* Separación del badge superior */
+            margin-top: 10px;
         }
 
         .trip-title {
@@ -356,7 +385,6 @@
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 5px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -367,7 +395,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -375,8 +402,8 @@
         .trip-actions {
             display: flex;
             gap: 8px;
-            z-index: 2; /* Por encima del badge */
-            background: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente */
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.7);
             padding: 5px;
             border-radius: 8px;
         }
@@ -398,7 +425,6 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -410,11 +436,21 @@
             margin-bottom: 15px;
         }
 
+        .trip-price-with-tax {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .trip-price-with-tax .original-price {
+            text-decoration: line-through;
+            color: #999;
+        }
+
         .trip-description {
             color: var(--gray);
             line-height: 1.6;
             margin-bottom: 15px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -423,7 +459,7 @@
             position: absolute;
             top: 15px;
             right: 15px;
-            z-index: 1; /* Debajo de los botones */
+            z-index: 1;
         }
 
         .status-badge {
@@ -453,7 +489,6 @@
             margin-top: 20px;
         }
 
-        /* Corrección para el encabezado de la sección de clientes */
         .clients-header {
             display: flex;
             justify-content: space-between;
@@ -495,7 +530,6 @@
             font-weight: 600;
             color: var(--dark);
             margin-bottom: 8px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -503,7 +537,6 @@
         .client-payment {
             font-size: 0.95rem;
             color: var(--gray);
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -646,7 +679,6 @@
         .expense-description {
             font-weight: 600;
             color: var(--dark);
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -755,6 +787,38 @@
             text-transform: uppercase;
             font-size: 0.85rem;
             letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .clients-table th.sortable {
+            cursor: pointer;
+            user-select: none;
+            padding-right: 30px;
+        }
+
+        .clients-table th.sortable:hover {
+            background-color: #e9ecef;
+        }
+
+        .clients-table th.sortable::after {
+            content: '\f0dc';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .clients-table th.sort-asc::after {
+            content: '\f0de';
+            color: var(--primary);
+        }
+
+        .clients-table th.sort-desc::after {
+            content: '\f0dd';
+            color: var(--primary);
         }
 
         .clients-table tr:hover {
@@ -811,7 +875,6 @@
             font-weight: 600;
             margin-bottom: 5px;
             color: var(--dark);
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -840,7 +903,6 @@
             color: var(--gray);
             line-height: 1.6;
             font-size: 0.95rem;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -880,7 +942,7 @@
             left: 0;
             width: 100%;
             height: 5px;
-            background: linear-gradient(90deg, #047698, #03637d); /* Cambiado al nuevo color */
+            background: linear-gradient(90deg, #047698, #03637d);
         }
 
         .tool-card:hover {
@@ -890,7 +952,7 @@
 
         .tool-icon {
             font-size: 3.5rem;
-            color: #047698; /* Cambiado al nuevo color */
+            color: #047698;
             margin-bottom: 20px;
         }
 
@@ -899,7 +961,6 @@
             font-weight: 700;
             color: var(--dark);
             margin-bottom: 12px;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -908,7 +969,6 @@
             color: var(--gray);
             margin-bottom: 25px;
             line-height: 1.6;
-            /* Añadido para evitar que el texto se desborde */
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -937,11 +997,11 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Estilos para la vista de lista y filtros */
         .view-toggle {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .view-toggle button {
@@ -1016,6 +1076,148 @@
             border-radius: 4px;
         }
 
+        .sort-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .sort-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-group label {
+            font-weight: 600;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+
+        .sort-group select {
+            min-width: 150px;
+        }
+
+        .tax-info {
+            background: #e8f5e9;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .clients-list-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .clients-list-container.active {
+            display: block;
+        }
+
+        .clients-list-container table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .clients-list-container th,
+        .clients-list-container td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .clients-list-container th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .clients-list-container th.sortable {
+            cursor: pointer;
+            user-select: none;
+            padding-right: 30px;
+        }
+
+        .clients-list-container th.sortable:hover {
+            background-color: #e9ecef;
+        }
+
+        .clients-list-container th.sortable::after {
+            content: '\f0dc';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .clients-list-container th.sort-asc::after {
+            content: '\f0de';
+            color: var(--primary);
+        }
+
+        .clients-list-container th.sort-desc::after {
+            content: '\f0dd';
+            color: var(--primary);
+        }
+
+        .clients-list-container tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .client-list-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .client-list-actions button {
+            padding: 5px 8px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+        }
+
+        .client-status-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .client-status-badge.paid {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .client-status-badge.pending {
+            background-color: #fff8e1;
+            color: #f57c00;
+        }
+
+        .client-status-badge.partial {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
@@ -1084,10 +1286,9 @@
             }
             
             .trip-card {
-                padding-top: 55px; /* Más espacio en móviles */
+                padding-top: 55px;
             }
             
-            /* Corrección para el encabezado de clientes en móviles */
             .clients-header {
                 flex-direction: column;
                 align-items: flex-start;
@@ -1110,6 +1311,25 @@
             .trips-list {
                 overflow-x: auto;
             }
+
+            .sort-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sort-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 5px;
+            }
+
+            .sort-group label {
+                margin-bottom: 5px;
+            }
+
+            .clients-list-container {
+                overflow-x: auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1123,7 +1343,7 @@
 
             .trip-card {
                 padding: 20px;
-                padding-top: 60px; /* Aún más espacio en móviles pequeños */
+                padding-top: 60px;
             }
 
             .trip-title {
@@ -1134,7 +1354,6 @@
                 font-size: 1.1rem;
             }
             
-            /* Corrección para botones pequeños en móviles */
             .btn-small {
                 padding: 6px 10px;
                 font-size: 0.8rem;
@@ -1149,7 +1368,6 @@
             }
         }
 
-        /* Loading spinner */
         .spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -1165,7 +1383,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Empty state */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -1183,7 +1400,6 @@
             color: var(--dark);
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -1238,7 +1454,6 @@
             <div id="dashboard" class="section active">
                 <input type="text" id="searchInput" class="search-box" placeholder="🔍 Buscar viajes o clientes..." onkeyup="filterTrips()">
                 
-                <!-- Botón para mostrar/ocultar resumen -->
                 <div style="text-align: right; margin-bottom: 15px;">
                     <button class="btn btn-secondary" id="toggleSummaryBtn" onclick="toggleSummary()">
                         <i class="fas fa-eye"></i> <span id="toggleSummaryText">Ocultar Resumen</span>
@@ -1246,10 +1461,8 @@
                 </div>
                 
                 <div class="summary-cards" id="summaryCards">
-                    <!-- Summary cards will be populated by JavaScript -->
                 </div>
 
-                <!-- Toggle de vista y filtros -->
                 <div class="view-toggle">
                     <button id="gridViewBtn" class="active" onclick="setView('grid')">
                         <i class="fas fa-th"></i> Vista de Tarjetas
@@ -1262,7 +1475,6 @@
                     </button>
                 </div>
 
-                <!-- Contenedor de filtros -->
                 <div class="filter-container" id="filterContainer">
                     <div class="filter-header">
                         <h3><i class="fas fa-filter"></i> Filtros Avanzados</h3>
@@ -1275,7 +1487,6 @@
                             <label for="filterDestination">Destino</label>
                             <select id="filterDestination" onchange="applyFilters()">
                                 <option value="">Todos los destinos</option>
-                                <!-- Opciones se llenarán dinámicamente -->
                             </select>
                         </div>
                         <div class="filter-group">
@@ -1305,26 +1516,46 @@
                     </div>
                 </div>
 
+                <div class="sort-container">
+                    <div class="sort-group">
+                        <label for="sortBy">Ordenar por:</label>
+                        <select id="sortBy" onchange="applySorting()">
+                            <option value="name">Nombre del viaje</option>
+                            <option value="destination">Destino</option>
+                            <option value="startDate">Fecha de inicio</option>
+                            <option value="endDate">Fecha de fin</option>
+                            <option value="price">Precio</option>
+                            <option value="clients">Número de clientes</option>
+                            <option value="profit">Ganancia</option>
+                        </select>
+                    </div>
+                    <div class="sort-group">
+                        <label for="sortOrder">Orden:</label>
+                        <select id="sortOrder" onchange="applySorting()">
+                            <option value="asc">Ascendente</option>
+                            <option value="desc">Descendente</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="trips-grid" id="tripsContainer">
-                    <!-- Trip cards will be populated by JavaScript -->
                 </div>
 
                 <div class="trips-list" id="tripsListContainer">
                     <table id="tripsTable">
                         <thead>
                             <tr>
-                                <th>Nombre del Viaje</th>
-                                <th>Destino</th>
-                                <th>Fechas</th>
-                                <th>Precio</th>
-                                <th>Estado</th>
-                                <th>Clientes</th>
-                                <th>Ganancia</th>
+                                <th class="sortable" onclick="sortTrips('name')">Nombre del Viaje</th>
+                                <th class="sortable" onclick="sortTrips('destination')">Destino</th>
+                                <th class="sortable" onclick="sortTrips('startDate')">Fechas</th>
+                                <th class="sortable" onclick="sortTrips('price')">Precio</th>
+                                <th class="sortable" onclick="sortTrips('status')">Estado</th>
+                                <th class="sortable" onclick="sortTrips('clients')">Clientes</th>
+                                <th class="sortable" onclick="sortTrips('profit')">Ganancia</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="tripsTableBody">
-                            <!-- Trip rows will be populated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -1346,17 +1577,16 @@
                     <table class="clients-table" id="clientsTable">
                         <thead>
                             <tr>
-                                <th>Foto</th>
-                                <th>Nombre</th>
-                                <th>Teléfono</th>
-                                <th>Email</th>
-                                <th>Dirección</th>
-                                <th>Alimentos</th>
+                                <th class="sortable" onclick="sortGlobalClients('name')">Foto</th>
+                                <th class="sortable" onclick="sortGlobalClients('name')">Nombre</th>
+                                <th class="sortable" onclick="sortGlobalClients('phone')">Teléfono</th>
+                                <th class="sortable" onclick="sortGlobalClients('email')">Email</th>
+                                <th class="sortable" onclick="sortGlobalClients('address')">Dirección</th>
+                                <th class="sortable" onclick="sortGlobalClients('food')">Alimentos</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="clientsTableBody">
-                            <!-- Clients table rows will be populated by JavaScript -->
                         </tbody>
                     </table>
                 </div>
@@ -1397,7 +1627,6 @@
                         </div>
                     </div>
                     <div id="whatsappRecipientsList">
-                        <!-- Recipients list will be populated by JavaScript -->
                     </div>
                 </div>
 
@@ -1417,7 +1646,6 @@
             <div id="reports" class="section">
                 <h2><i class="fas fa-chart-bar"></i> Reportes y Estadísticas</h2>
                 
-                <!-- Filtro de fechas -->
                 <div style="margin-bottom: 25px; background: #f8f9fa; padding: 20px; border-radius: 10px;">
                     <h3>Filtrar por Fechas</h3>
                     <div class="form-row">
@@ -1436,7 +1664,6 @@
                     </div>
                 </div>
                 
-                <!-- Gráfica mensual -->
                 <div style="margin-bottom: 30px;">
                     <h3>Gráfica de Ingresos Mensuales</h3>
                     <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: var(--shadow);">
@@ -1445,7 +1672,6 @@
                 </div>
                 
                 <div id="reportsContent">
-                    <!-- Reports content will be populated by JavaScript -->
                 </div>
             </div>
 
@@ -1454,7 +1680,6 @@
                 <h2><i class="fas fa-toolbox"></i> Herramientas del Sistema</h2>
                 
                 <div class="tools-grid">
-                    <!-- Import/Export Tool -->
                     <div class="tool-card">
                         <div class="tool-icon">
                             <i class="fas fa-exchange-alt"></i>
@@ -1477,7 +1702,6 @@
                         </div>
                     </div>
 
-                    <!-- Data Management Tool -->
                     <div class="tool-card">
                         <div class="tool-icon">
                             <i class="fas fa-database"></i>
@@ -1494,7 +1718,6 @@
                         </div>
                     </div>
 
-                    <!-- System Export Tool -->
                     <div class="tool-card">
                         <div class="tool-icon">
                             <i class="fas fa-download"></i>
@@ -1508,7 +1731,6 @@
                         </div>
                     </div>
 
-                    <!-- Backup Tool -->
                     <div class="tool-card">
                         <div class="tool-icon">
                             <i class="fas fa-cloud-upload-alt"></i>
@@ -1559,9 +1781,23 @@
                             <input type="date" id="tripEndDate" required>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="tripPrice">Precio Total *</label>
-                        <input type="number" id="tripPrice" min="0" step="0.01" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tripBasePrice">Precio Base *</label>
+                            <input type="number" id="tripBasePrice" min="0" step="0.01" required onchange="calculateTaxPrice()">
+                        </div>
+                        <div class="form-group">
+                            <label for="tripPrice">Precio Final *</label>
+                            <input type="number" id="tripPrice" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="includeTax" onchange="calculateTaxPrice()">
+                        <label for="includeTax">Incluir impuestos del 16%</label>
+                    </div>
+                    <div class="tax-info" id="taxInfo" style="display: none;">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="taxCalculation"></span>
                     </div>
                     <div class="form-group">
                         <label for="tripDescription">Descripción</label>
@@ -1585,13 +1821,12 @@
 
         <!-- Clients Modal -->
         <div id="clientsModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content large">
                 <div class="modal-header">
                     <h2 id="clientsModalTitle">Gestionar Clientes</h2>
                     <span class="close" onclick="closeClientsModal()">×</span>
                 </div>
                 <div id="clientsContent">
-                    <!-- Clients content will be populated by JavaScript -->
                 </div>
             </div>
         </div>
@@ -1680,7 +1915,6 @@
                                 </tr>
                             </thead>
                             <tbody id="existingClientsTableBody">
-                                <!-- Existing clients table rows will be populated by JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -1717,7 +1951,6 @@
                         </div>
                     </div>
                     
-                    <!-- Campos de descuento agregados -->
                     <div class="form-row">
                         <div class="form-group">
                             <label for="clientDiscount">Descuento (%)</label>
@@ -1856,7 +2089,6 @@
         </div>
     </div>
 
-    <!-- Notification Container -->
     <div id="notification" class="notification"></div>
 
     <script>
@@ -1871,8 +2103,13 @@
         let whatsappImageData = null;
         let monthlyChart = null;
         let summaryVisible = true;
-        let currentView = 'grid'; // 'grid' o 'list'
-        let filteredTrips = [...trips]; // Viajes filtrados actualmente
+        let currentView = 'grid';
+        let filteredTrips = [...trips];
+        let currentTripClientsView = 'cards';
+        let sortConfig = {
+            field: 'name',
+            order: 'asc'
+        };
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -1882,18 +2119,15 @@
             renderWhatsAppRecipients();
             populateFilterOptions();
             
-            // Set today's date as default for payment date
             document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
             
-            // WhatsApp message character counter
             document.getElementById('whatsappMessage').addEventListener('input', function() {
                 const count = this.value.length;
                 document.getElementById('charCount').textContent = count;
                 updateMessagePreview();
             });
             
-            // Calcular precio final cuando cambia el descuento
             document.getElementById('clientDiscount').addEventListener('input', function() {
                 const trip = trips.find(t => t.id === currentTripId);
                 if (!trip) return;
@@ -1925,7 +2159,6 @@
                 globalClients = JSON.parse(savedGlobalClients);
             }
             
-            // Inicializar filteredTrips con todos los viajes
             filteredTrips = [...trips];
         }
 
@@ -1953,7 +2186,6 @@
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             
-            // Set icon based on type
             let icon = '';
             if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
             if (type === 'error') icon = '<i class="fas fa-exclamation-circle"></i>';
@@ -1970,11 +2202,9 @@
 
         // Navigation functions
         function showSection(sectionId) {
-            // Hide all sections
             const sections = document.querySelectorAll('.section');
             sections.forEach(section => section.classList.remove('active'));
             
-            // Show the selected section
             document.getElementById(sectionId).classList.add('active');
             
             if (sectionId === 'dashboard') {
@@ -1986,11 +2216,10 @@
             } else if (sectionId === 'reports') {
                 renderReports();
             } else if (sectionId === 'tools') {
-                // Tools section is static, no need to render
+                // Tools section is static
             }
         }
 
-        // Toggle summary visibility
         function toggleSummary() {
             const summaryCards = document.getElementById('summaryCards');
             const toggleBtn = document.getElementById('toggleSummaryBtn');
@@ -2010,7 +2239,6 @@
             }
         }
 
-        // View toggle functions
         function setView(viewType) {
             currentView = viewType;
             
@@ -2033,7 +2261,6 @@
                 listView.classList.add('active');
             }
             
-            // Render the appropriate view
             if (viewType === 'grid') {
                 renderTripsGrid();
             } else {
@@ -2055,7 +2282,6 @@
         }
 
         function populateFilterOptions() {
-            // Llenar el selector de destinos
             const destinationSelect = document.getElementById('filterDestination');
             const destinations = [...new Set(trips.map(trip => trip.destination))];
             
@@ -2076,28 +2302,22 @@
             const priceMin = parseFloat(document.getElementById('filterPriceMin').value) || 0;
             const priceMax = parseFloat(document.getElementById('filterPriceMax').value) || Infinity;
             
-            // Aplicar filtros
             filteredTrips = trips.filter(trip => {
-                // Filtro de destino
                 if (destination && trip.destination !== destination) return false;
                 
-                // Filtro de estado
                 if (status) {
                     const isCompleted = status === 'completed';
                     if (trip.completed !== isCompleted) return false;
                 }
                 
-                // Filtro de fechas
                 if (dateFrom && new Date(trip.startDate) < new Date(dateFrom)) return false;
                 if (dateTo && new Date(trip.endDate) > new Date(dateTo)) return false;
                 
-                // Filtro de precio
                 if (trip.price < priceMin || trip.price > priceMax) return false;
                 
                 return true;
             });
             
-            // Aplicar también el filtro de búsqueda si hay texto
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             if (searchTerm) {
                 filteredTrips = filteredTrips.filter(trip => {
@@ -2106,12 +2326,77 @@
                 });
             }
             
-            // Actualizar la vista actual
+            applySorting();
+        }
+
+        function applySorting() {
+            const sortBy = document.getElementById('sortBy').value;
+            const sortOrder = document.getElementById('sortOrder').value;
+            
+            sortConfig.field = sortBy;
+            sortConfig.order = sortOrder;
+            
+            filteredTrips.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(sortBy) {
+                    case 'name':
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                        break;
+                    case 'destination':
+                        valueA = a.destination.toLowerCase();
+                        valueB = b.destination.toLowerCase();
+                        break;
+                    case 'startDate':
+                        valueA = new Date(a.startDate);
+                        valueB = new Date(b.startDate);
+                        break;
+                    case 'endDate':
+                        valueA = new Date(a.endDate);
+                        valueB = new Date(b.endDate);
+                        break;
+                    case 'price':
+                        valueA = a.price;
+                        valueB = b.price;
+                        break;
+                    case 'clients':
+                        valueA = a.clients ? a.clients.length : 0;
+                        valueB = b.clients ? b.clients.length : 0;
+                        break;
+                    case 'profit':
+                        const profitA = calculateTripProfit(a);
+                        const profitB = calculateTripProfit(b);
+                        valueA = profitA;
+                        valueB = profitB;
+                        break;
+                    default:
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                }
+                
+                if (valueA < valueB) {
+                    return sortOrder === 'asc' ? -1 : 1;
+                }
+                if (valueA > valueB) {
+                    return sortOrder === 'asc' ? 1 : -1;
+                }
+                return 0;
+            });
+            
             if (currentView === 'grid') {
                 renderTripsGrid();
             } else {
                 renderTripsList();
             }
+        }
+
+        function calculateTripProfit(trip) {
+            const totalPaid = trip.clients ? trip.clients.reduce((sum, client) => {
+                return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
+            }, 0) : 0;
+            const totalExpenses = trip.expenses ? trip.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
+            return totalPaid - totalExpenses;
         }
 
         function resetFilters() {
@@ -2121,11 +2406,12 @@
             document.getElementById('filterDateTo').value = '';
             document.getElementById('filterPriceMin').value = '';
             document.getElementById('filterPriceMax').value = '';
+            document.getElementById('sortBy').value = 'name';
+            document.getElementById('sortOrder').value = 'asc';
             
-            // Restablecer filteredTrips a todos los viajes
             filteredTrips = [...trips];
+            sortConfig = { field: 'name', order: 'asc' };
             
-            // Aplicar el filtro de búsqueda si hay texto
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             if (searchTerm) {
                 filteredTrips = filteredTrips.filter(trip => {
@@ -2134,7 +2420,6 @@
                 });
             }
             
-            // Actualizar la vista actual
             if (currentView === 'grid') {
                 renderTripsGrid();
             } else {
@@ -2144,7 +2429,6 @@
             showNotification('Filtros restablecidos', 'success');
         }
 
-        // Dashboard rendering
         function renderDashboard() {
             renderSummaryCards();
             renderTripsGrid();
@@ -2218,7 +2502,6 @@
                 const clients = trip.clients || [];
                 const clientsCount = clients.length;
                 
-                // Calcular totales considerando descuentos
                 const totalExpected = clients.reduce((sum, client) => sum + (client.finalPrice || trip.price), 0);
                 const totalPaid = clients.reduce((sum, client) => {
                     return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
@@ -2262,6 +2545,12 @@
                             <div class="trip-price">
                                 <i class="fas fa-tag"></i> ${formatCurrency(trip.price)} por persona
                             </div>
+                            ${trip.basePrice && trip.basePrice !== trip.price ? `
+                                <div class="trip-price-with-tax">
+                                    <span class="original-price">Precio base: ${formatCurrency(trip.basePrice)}</span><br>
+                                    <i class="fas fa-receipt"></i> Incluye 16% de impuestos
+                                </div>
+                            ` : ''}
                             ${trip.description ? `<div class="trip-description">${trip.description}</div>` : ''}
                         </div>
                         
@@ -2397,7 +2686,6 @@
                 const clients = trip.clients || [];
                 const clientsCount = clients.length;
                 
-                // Calcular totales considerando descuentos
                 const totalPaid = clients.reduce((sum, client) => {
                     return sum + (client.payments ? client.payments.reduce((paySum, payment) => paySum + payment.amount, 0) : 0);
                 }, 0);
@@ -2446,7 +2734,6 @@
             }).join('');
         }
 
-        // Toggle trip completed status
         function toggleTripCompleted(tripId) {
             const trip = trips.find(t => t.id === tripId);
             if (!trip) return;
@@ -2457,7 +2744,6 @@
             showNotification(trip.completed ? 'Viaje marcado como realizado' : 'Viaje marcado como no realizado', 'success');
         }
 
-        // Global Clients Management
         function renderGlobalClients() {
             const tableBody = document.getElementById('clientsTableBody');
             
@@ -2566,7 +2852,6 @@
             editingGlobalClient = false;
         }
 
-        // Global Client Photo Management
         function previewGlobalClientPhoto(event) {
             const file = event.target.files[0];
             if (file) {
@@ -2586,7 +2871,6 @@
             document.getElementById('globalClientPhoto').value = '';
         }
 
-        // Global Client Form Handling
         document.getElementById('globalClientForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -2605,7 +2889,6 @@
                 return;
             }
 
-            // Check for duplicate names (excluding current client when editing)
             const existingClient = globalClients.find(c => 
                 c.name.toLowerCase() === formData.name.toLowerCase() && 
                 (!editingGlobalClient || c.id !== currentClientId)
@@ -2637,7 +2920,6 @@
             renderGlobalClients();
         });
 
-        // Trip management functions
         function showNewTripModal() {
             editingTrip = false;
             document.getElementById('tripModalTitle').textContent = 'Nuevo Viaje';
@@ -2657,9 +2939,11 @@
             document.getElementById('tripDestination').value = trip.destination;
             document.getElementById('tripStartDate').value = trip.startDate;
             document.getElementById('tripEndDate').value = trip.endDate;
+            document.getElementById('tripBasePrice').value = trip.basePrice || trip.price;
             document.getElementById('tripPrice').value = trip.price;
             document.getElementById('tripDescription').value = trip.description || '';
             document.getElementById('tripImages').value = trip.images ? trip.images.join(', ') : '';
+            document.getElementById('includeTax').checked = trip.basePrice && trip.basePrice !== trip.price;
             
             document.getElementById('tripModal').style.display = 'block';
         }
@@ -2683,32 +2967,52 @@
         function closeTripModal() {
             document.getElementById('tripModal').style.display = 'none';
             document.getElementById('tripForm').reset();
+            document.getElementById('taxInfo').style.display = 'none';
             currentTripId = null;
             editingTrip = false;
         }
 
-        // Trip form handling
+        function calculateTaxPrice() {
+            const basePrice = parseFloat(document.getElementById('tripBasePrice').value) || 0;
+            const includeTax = document.getElementById('includeTax').checked;
+            const taxInfo = document.getElementById('taxInfo');
+            const taxCalculation = document.getElementById('taxCalculation');
+            const priceInput = document.getElementById('tripPrice');
+            
+            if (includeTax && basePrice > 0) {
+                const tax = basePrice * 0.16;
+                const finalPrice = basePrice + tax;
+                
+                priceInput.value = finalPrice.toFixed(2);
+                taxCalculation.textContent = `IVA (16%): ${formatCurrency(tax)} | Precio final: ${formatCurrency(finalPrice)}`;
+                taxInfo.style.display = 'flex';
+            } else {
+                priceInput.value = basePrice.toFixed(2);
+                taxInfo.style.display = 'none';
+            }
+        }
+
         document.getElementById('tripForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
+            const basePrice = parseFloat(document.getElementById('tripBasePrice').value) || 0;
             const formData = {
                 name: document.getElementById('tripName').value.trim(),
                 destination: document.getElementById('tripDestination').value.trim(),
                 startDate: document.getElementById('tripStartDate').value,
                 endDate: document.getElementById('tripEndDate').value,
                 price: parseFloat(document.getElementById('tripPrice').value),
+                basePrice: basePrice,
                 description: document.getElementById('tripDescription').value.trim(),
                 images: document.getElementById('tripImages').value.split(',').map(url => url.trim()).filter(url => url),
-                completed: false // Por defecto, los viajes no están completados
+                completed: false
             };
 
-            // Validation
             if (!formData.name || !formData.destination || !formData.startDate || !formData.endDate || !formData.price) {
                 showNotification('Por favor completa todos los campos requeridos', 'error');
                 return;
             }
 
-            // Modificación: Permitir misma fecha de inicio y fin
             if (new Date(formData.startDate) > new Date(formData.endDate)) {
                 showNotification('La fecha de inicio debe ser anterior o igual a la fecha de fin', 'error');
                 return;
@@ -2740,10 +3044,9 @@
             saveData();
             closeTripModal();
             renderDashboard();
-            populateFilterOptions(); // Actualizar opciones de filtros
+            populateFilterOptions();
         });
 
-        // Add existing client to trip
         function addExistingClientToTrip(tripId) {
             currentTripId = tripId;
             const trip = trips.find(t => t.id === tripId);
@@ -2758,7 +3061,6 @@
             const trip = trips.find(t => t.id === currentTripId);
             if (!trip) return;
 
-            // Filter out clients already in this trip
             const availableClients = globalClients.filter(globalClient => 
                 !trip.clients || !trip.clients.some(tripClient => tripClient.globalClientId === globalClient.id)
             );
@@ -2815,7 +3117,6 @@
             
             if (!trip || !globalClient) return;
 
-            // Check if client is already in trip
             if (trip.clients && trip.clients.some(c => c.globalClientId === globalClientId)) {
                 showNotification('Este cliente ya está registrado en este viaje', 'warning');
                 return;
@@ -2829,8 +3130,8 @@
                 phone: globalClient.phone,
                 food: globalClient.food,
                 notes: globalClient.notes,
-                discount: 0, // Sin descuento por defecto
-                finalPrice: trip.price, // Precio original por defecto
+                discount: 0,
+                finalPrice: trip.price,
                 payments: [],
                 createdAt: new Date().toISOString()
             };
@@ -2851,9 +3152,9 @@
             currentTripId = null;
         }
 
-        // Client management functions
         function manageClients(tripId) {
             currentTripId = tripId;
+            currentTripClientsView = 'cards';
             const trip = trips.find(t => t.id === tripId);
             if (!trip) return;
 
@@ -2880,6 +3181,10 @@
                     <button class="btn btn-secondary" onclick="addExistingClientToTrip('${trip.id}')" style="margin-left: 10px;">
                         <i class="fas fa-user-plus"></i> Agregar Cliente Existente
                     </button>
+                    <button class="btn btn-secondary" onclick="toggleClientsView()" style="margin-left: 10px;">
+                        <i class="fas fa-${currentTripClientsView === 'cards' ? 'list' : 'th'}"></i> 
+                        Vista ${currentTripClientsView === 'cards' ? 'de Lista' : 'de Tarjetas'}
+                    </button>
                 </div>
 
                 ${clients.length > 0 ? `
@@ -2902,102 +3207,246 @@
                     </div>
                 ` : ''}
 
-                <div style="max-height: 400px; overflow-y: auto;">
-                    ${clients.length > 0 ? clients.map(client => {
-                        const clientPrice = client.finalPrice || trip.price;
-                        const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
-                        const clientPending = clientPrice - clientPaid;
-                        const paymentCount = client.payments ? client.payments.length : 0;
-                        const hasDiscount = client.discount && client.discount > 0;
+                <div id="clientsCardsView" style="${currentTripClientsView === 'cards' ? 'display: block;' : 'display: none;'}">
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${clients.length > 0 ? clients.map(client => {
+                            const clientPrice = client.finalPrice || trip.price;
+                            const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                            const clientPending = clientPrice - clientPaid;
+                            const paymentCount = client.payments ? client.payments.length : 0;
+                            const hasDiscount = client.discount && client.discount > 0;
 
-                        return `
-                            <div class="client-item" style="margin-bottom: 15px;">
-                                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                                    <div style="flex: 1;">
-                                        <div class="client-name">${client.name}</div>
-                                        ${client.email ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope"></i> ${client.email}</div>` : ''}
-                                        ${client.phone ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-phone"></i> ${client.phone}</div>` : ''}
-                                        ${client.food ? `<div style="color: #ff9800; font-size: 0.9rem;"><i class="fas fa-utensils"></i> Requiere alimentos especiales</div>` : ''}
-                                        ${hasDiscount ? `<div style="color: #f44336; font-size: 0.9rem;"><i class="fas fa-tag"></i> Descuento: ${client.discount}%</div>` : ''}
+                            return `
+                                <div class="client-item" style="margin-bottom: 15px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                        <div style="flex: 1;">
+                                            <div class="client-name">${client.name}</div>
+                                            ${client.email ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-envelope"></i> ${client.email}</div>` : ''}
+                                            ${client.phone ? `<div style="color: var(--gray); font-size: 0.9rem;"><i class="fas fa-phone"></i> ${client.phone}</div>` : ''}
+                                            ${client.food ? `<div style="color: #ff9800; font-size: 0.9rem;"><i class="fas fa-utensils"></i> Requiere alimentos especiales</div>` : ''}
+                                            ${hasDiscount ? `<div style="color: #f44336; font-size: 0.9rem;"><i class="fas fa-tag"></i> Descuento: ${client.discount}%</div>` : ''}
+                                        </div>
+                                        <div style="display: flex; gap: 5px;">
+                                            <button class="btn btn-small btn-secondary" onclick="editClient('${client.id}')" title="Editar cliente">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-small btn-danger" onclick="deleteClient('${client.id}')" title="Eliminar cliente">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div style="display: flex; gap: 5px;">
-                                        <button class="btn btn-small btn-secondary" onclick="editClient('${client.id}')" title="Editar cliente">
-                                            <i class="fas fa-edit"></i>
+                                    
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: center; margin-bottom: 12px;">
+                                        <div>
+                                            <small style="color: var(--gray);">Precio:</small><br>
+                                            <span style="font-weight: bold; color: #2196F3;">
+                                                ${hasDiscount ? `<span style="text-decoration: line-through; color: #999; font-size: 0.9em;">${formatCurrency(trip.price)}</span> ` : ''}
+                                                ${formatCurrency(clientPrice)}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <small style="color: var(--gray);">Pagado:</small><br>
+                                            <span style="font-weight: bold; color: #4CAF50;">${formatCurrency(clientPaid)}</span>
+                                        </div>
+                                        <button class="btn btn-small btn-primary" onclick="showPaymentModal('${client.id}')">
+                                            <i class="fas fa-plus"></i> Abono
                                         </button>
-                                        <button class="btn btn-small btn-danger" onclick="deleteClient('${client.id}')" title="Eliminar cliente">
-                                            <i class="fas fa-trash"></i>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                        <div>
+                                            <small style="color: var(--gray);">Pendiente:</small><br>
+                                            <span style="font-weight: bold; color: ${clientPending > 0 ? '#f44336' : '#4CAF50'};">${formatCurrency(clientPending)}</span>
+                                        </div>
+                                    </div>
+
+                                    ${clientPending > 0 ? `
+                                        <button class="btn btn-small btn-whatsapp" onclick="sendWhatsAppReminder('${client.id}')" style="width: 100%; margin-bottom: 12px;">
+                                            <i class="fab fa-whatsapp"></i> Enviar Recordatorio
                                         </button>
-                                    </div>
-                                </div>
-                                
-                                <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: center; margin-bottom: 12px;">
-                                    <div>
-                                        <small style="color: var(--gray);">Precio:</small><br>
-                                        <span style="font-weight: bold; color: #2196F3;">
-                                            ${hasDiscount ? `<span style="text-decoration: line-through; color: #999; font-size: 0.9em;">${formatCurrency(trip.price)}</span> ` : ''}
-                                            ${formatCurrency(clientPrice)}
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <small style="color: var(--gray);">Pagado:</small><br>
-                                        <span style="font-weight: bold; color: #4CAF50;">${formatCurrency(clientPaid)}</span>
-                                    </div>
-                                    <button class="btn btn-small btn-primary" onclick="showPaymentModal('${client.id}')">
-                                        <i class="fas fa-plus"></i> Abono
-                                    </button>
-                                </div>
+                                    ` : ''}
 
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <div>
-                                        <small style="color: var(--gray);">Pendiente:</small><br>
-                                        <span style="font-weight: bold; color: ${clientPending > 0 ? '#f44336' : '#4CAF50'};">${formatCurrency(clientPending)}</span>
-                                    </div>
-                                </div>
-
-                                ${clientPending > 0 ? `
-                                    <button class="btn btn-small btn-whatsapp" onclick="sendWhatsAppReminder('${client.id}')" style="width: 100%; margin-bottom: 12px;">
-                                        <i class="fab fa-whatsapp"></i> Enviar Recordatorio
-                                    </button>
-                                ` : ''}
-
-                                ${paymentCount > 0 ? `
-                                    <div class="payment-history">
-                                        <h5 style="margin-bottom: 10px; color: #555;">
-                                            <i class="fas fa-history"></i> Historial de Pagos (${paymentCount})
-                                        </h5>
-                                        ${client.payments.slice(-3).reverse().map(payment => `
-                                            <div class="payment-item">
-                                                <div>
-                                                    <div style="font-weight: bold;">${formatCurrency(payment.amount)}</div>
-                                                    <div style="font-size: 0.8rem; color: var(--gray);">
-                                                        ${formatDate(payment.date)} | ${payment.method}
-                                                        ${payment.reference ? ` | Ref: ${payment.reference}` : ''}
+                                    ${paymentCount > 0 ? `
+                                        <div class="payment-history">
+                                            <h5 style="margin-bottom: 10px; color: #555;">
+                                                <i class="fas fa-history"></i> Historial de Pagos (${paymentCount})
+                                            </h5>
+                                            ${client.payments.slice(-3).reverse().map(payment => `
+                                                <div class="payment-item">
+                                                    <div>
+                                                        <div style="font-weight: bold;">${formatCurrency(payment.amount)}</div>
+                                                        <div style="font-size: 0.8rem; color: var(--gray);">
+                                                            ${formatDate(payment.date)} | ${payment.method}
+                                                            ${payment.reference ? ` | Ref: ${payment.reference}` : ''}
+                                                        </div>
                                                     </div>
+                                                    <button class="btn btn-small btn-danger" onclick="deletePayment('${client.id}', '${payment.id}')" title="Eliminar pago">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
                                                 </div>
-                                                <button class="btn btn-small btn-danger" onclick="deletePayment('${client.id}', '${payment.id}')" title="Eliminar pago">
+                                            `).join('')}
+                                            ${paymentCount > 3 ? `<div style="text-align: center; color: var(--gray); padding: 5px;">... y ${paymentCount - 3} pagos más</div>` : ''}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                        }).join('') : `
+                            <div class="empty-state" style="padding: 40px 0;">
+                                <i class="fas fa-users"></i>
+                                <h3>No hay clientes registrados</h3>
+                                <p>Agrega clientes para comenzar a gestionar el viaje</p>
+                            </div>
+                        `}
+                    </div>
+                </div>
+
+                <div class="clients-list-container ${currentTripClientsView === 'list' ? 'active' : ''}" id="clientsListView">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTripClients('name')">Nombre</th>
+                                <th class="sortable" onclick="sortTripClients('email')">Email</th>
+                                <th class="sortable" onclick="sortTripClients('phone')">Teléfono</th>
+                                <th class="sortable" onclick="sortTripClients('price')">Precio</th>
+                                <th class="sortable" onclick="sortTripClients('paid')">Pagado</th>
+                                <th class="sortable" onclick="sortTripClients('pending')">Pendiente</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${clients.length > 0 ? clients.map(client => {
+                                const clientPrice = client.finalPrice || trip.price;
+                                const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                                const clientPending = clientPrice - clientPaid;
+                                
+                                let statusClass = 'paid';
+                                let statusText = 'Pagado';
+                                if (clientPending > 0) {
+                                    if (clientPaid > 0) {
+                                        statusClass = 'partial';
+                                        statusText = 'Parcial';
+                                    } else {
+                                        statusClass = 'pending';
+                                        statusText = 'Pendiente';
+                                    }
+                                }
+
+                                return `
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600;">${client.name}</div>
+                                            ${client.food ? '<div style="color: #ff9800; font-size: 0.8rem;"><i class="fas fa-utensils"></i> Alimentos</div>' : ''}
+                                            ${client.discount && client.discount > 0 ? `<div style="color: #f44336; font-size: 0.8rem;"><i class="fas fa-tag"></i> ${client.discount}% dto.</div>` : ''}
+                                        </td>
+                                        <td>${client.email || '-'}</td>
+                                        <td>${client.phone || '-'}</td>
+                                        <td>${formatCurrency(clientPrice)}</td>
+                                        <td>${formatCurrency(clientPaid)}</td>
+                                        <td>${formatCurrency(clientPending)}</td>
+                                        <td>
+                                            <span class="client-status-badge ${statusClass}">
+                                                ${statusText}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="client-list-actions">
+                                                <button class="btn btn-small btn-primary" onclick="editClient('${client.id}')" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-small btn-success" onclick="showPaymentModal('${client.id}')" title="Agregar pago">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                ${clientPending > 0 ? `
+                                                    <button class="btn btn-small btn-whatsapp" onclick="sendWhatsAppReminder('${client.id}')" title="Enviar recordatorio">
+                                                        <i class="fab fa-whatsapp"></i>
+                                                    </button>
+                                                ` : ''}
+                                                <button class="btn btn-small btn-danger" onclick="deleteClient('${client.id}')" title="Eliminar">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </div>
-                                        `).join('')}
-                                        ${paymentCount > 3 ? `<div style="text-align: center; color: var(--gray); padding: 5px;">... y ${paymentCount - 3} pagos más</div>` : ''}
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
-                    }).join('') : `
-                        <div class="empty-state" style="padding: 40px 0;">
-                            <i class="fas fa-users"></i>
-                            <h3>No hay clientes registrados</h3>
-                            <p>Agrega clientes para comenzar a gestionar el viaje</p>
-                        </div>
-                    `}
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('') : `
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray);">
+                                        <div class="empty-state" style="padding: 0;">
+                                            <i class="fas fa-users"></i>
+                                            <h3>No hay clientes registrados</h3>
+                                            <p>Agrega clientes para comenzar a gestionar el viaje</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `}
+                        </tbody>
+                    </table>
                 </div>
             `;
+        }
+
+        function toggleClientsView() {
+            currentTripClientsView = currentTripClientsView === 'cards' ? 'list' : 'cards';
+            const trip = trips.find(t => t.id === currentTripId);
+            if (trip) {
+                renderClientsModal(trip);
+            }
+        }
+
+        function sortTripClients(field) {
+            const trip = trips.find(t => t.id === currentTripId);
+            if (!trip || !trip.clients) return;
+
+            trip.clients.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(field) {
+                    case 'name':
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                        break;
+                    case 'email':
+                        valueA = a.email || '';
+                        valueB = b.email || '';
+                        break;
+                    case 'phone':
+                        valueA = a.phone || '';
+                        valueB = b.phone || '';
+                        break;
+                    case 'price':
+                        valueA = a.finalPrice || trip.price;
+                        valueB = b.finalPrice || trip.price;
+                        break;
+                    case 'paid':
+                        valueA = a.payments ? a.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                        valueB = b.payments ? b.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                        break;
+                    case 'pending':
+                        const priceA = a.finalPrice || trip.price;
+                        const priceB = b.finalPrice || trip.price;
+                        const paidA = a.payments ? a.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                        const paidB = b.payments ? b.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
+                        valueA = priceA - paidA;
+                        valueB = priceB - paidB;
+                        break;
+                    default:
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                }
+                
+                if (valueA < valueB) return -1;
+                if (valueA > valueB) return 1;
+                return 0;
+            });
+            
+            renderClientsModal(trip);
         }
 
         function closeClientsModal() {
             document.getElementById('clientsModal').style.display = 'none';
             currentTripId = null;
+            currentTripClientsView = 'cards';
         }
 
         function showNewClientModal() {
@@ -3007,7 +3456,6 @@
             document.getElementById('clientDiscount').value = 0;
             document.getElementById('clientFinalPrice').value = '';
             
-            // Obtener el precio del viaje actual
             const trip = trips.find(t => t.id === currentTripId);
             if (trip) {
                 document.getElementById('clientFinalPrice').value = trip.price.toFixed(2);
@@ -3062,7 +3510,6 @@
             editingClient = false;
         }
 
-        // Client form handling
         document.getElementById('clientForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -3073,7 +3520,7 @@
                 name: document.getElementById('clientName').value.trim(),
                 email: document.getElementById('clientEmail').value.trim(),
                 phone: document.getElementById('clientPhone').value.trim(),
-                document: client.document ? document.getElementById('clientDocument').value.trim() : '',
+                document: document.getElementById('clientDocument').value.trim(),
                 food: document.getElementById('clientFood').checked,
                 notes: document.getElementById('clientNotes').value.trim(),
                 discount: parseFloat(document.getElementById('clientDiscount').value) || 0,
@@ -3110,7 +3557,6 @@
             renderDashboard();
         });
 
-        // Payment management
         function showPaymentModal(clientId) {
             currentClientId = clientId;
             document.getElementById('paymentForm').reset();
@@ -3186,7 +3632,6 @@
             }
         }
 
-        // Expense management
         function manageExpenses(tripId) {
             currentTripId = tripId;
             const trip = trips.find(t => t.id === tripId);
@@ -3333,7 +3778,6 @@
             }
         }
 
-        // WhatsApp functionality
         function renderWhatsAppRecipients() {
             const recipientsList = document.getElementById('whatsappRecipientsList');
             
@@ -3376,7 +3820,6 @@
             
             document.getElementById('selectedCount').textContent = `${selectedCount} seleccionados`;
             
-            // Enable/disable send button based on selection
             const sendButton = document.getElementById('sendWhatsAppBtn');
             const message = document.getElementById('whatsappMessage').value.trim();
             
@@ -3405,7 +3848,6 @@
                     document.getElementById('whatsappImagePreview').style.display = 'block';
                     document.getElementById('removeImageBtn').style.display = 'inline-block';
                     
-                    // Store the image data for later use
                     whatsappImageData = e.target.result;
                 };
                 reader.readAsDataURL(file);
@@ -3434,26 +3876,22 @@
                 return;
             }
             
-            // Get selected clients
             const selectedClients = Array.from(checkboxes).map(checkbox => {
                 const clientId = checkbox.value;
                 return globalClients.find(client => client.id === clientId);
-            }).filter(client => client); // Filter out any undefined clients
+            }).filter(client => client);
             
-            // Modificado para manejar el envío secuencial con imágenes
             let currentIndex = 0;
             
             function sendNextMessage() {
                 if (currentIndex >= selectedClients.length) {
                     showNotification(`Se abrieron ${selectedClients.length} conversaciones de WhatsApp`, 'success');
                     
-                    // Reset form
                     document.getElementById('whatsappMessage').value = '';
                     document.getElementById('charCount').textContent = '0';
                     removeWhatsAppImage();
                     updateMessagePreview();
                     
-                    // Uncheck all checkboxes
                     document.getElementById('selectAllClients').checked = false;
                     toggleAllClients();
                     
@@ -3462,21 +3900,16 @@
                 
                 const client = selectedClients[currentIndex];
                 
-                // Format phone number (remove any non-digit characters)
                 let phoneNumber = client.phone.replace(/\D/g, '');
                 
-                // Add country code if not present (assuming Mexico)
                 if (phoneNumber.length === 10) {
                     phoneNumber = '52' + phoneNumber;
                 }
                 
-                // Create WhatsApp URL
                 let whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
                 
-                // Open in new window/tab
                 window.open(whatsappUrl, '_blank');
                 
-                // Si hay una imagen, mostrar instrucciones para adjuntarla manualmente
                 if (whatsappImageData) {
                     setTimeout(() => {
                         showNotification(`Por favor adjunta la imagen manualmente en la conversación con ${client.name}`, 'warning');
@@ -3485,7 +3918,6 @@
                 
                 currentIndex++;
                 
-                // Esperar un momento antes de abrir la siguiente conversación
                 setTimeout(sendNextMessage, 2000);
             }
             
@@ -3508,21 +3940,16 @@
                 return;
             }
 
-            // Create reminder message
             const reminderMessage = `Hola ${client.name.split(' ')[0]}, este es un recordatorio amable de Nómadas Tours sobre tu pago pendiente de ${formatCurrency(clientPending)} para el viaje "${trip.name}".\n\nFecha del viaje: ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}\nDestino: ${trip.destination}\n\nSi tienes alguna pregunta o necesitas más información, no dudes en contactarnos. ¡Gracias por tu preferencia!`;
 
-            // Format phone number
             let phoneNumber = client.phone.replace(/\D/g, '');
             
-            // Add country code if not present (assuming Mexico)
             if (phoneNumber.length === 10) {
                 phoneNumber = '52' + phoneNumber;
             }
             
-            // Create WhatsApp URL
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(reminderMessage)}`;
             
-            // Open in new window/tab
             window.open(whatsappUrl, '_blank');
             
             showNotification('Se abrió WhatsApp con el recordatorio de pago', 'success');
@@ -3532,7 +3959,6 @@
             const trip = trips.find(t => t.id === tripId);
             if (!trip || !trip.clients || trip.clients.length === 0) return;
 
-            // Create clients list message
             let clientsList = `Lista de clientes para el viaje "${trip.name}"\n\n`;
             clientsList += `Destino: ${trip.destination}\n`;
             clientsList += `Fechas: ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}\n\n`;
@@ -3569,7 +3995,6 @@
             clientsList += `Total pendiente: ${formatCurrency(totalPending)}\n\n`;
             clientsList += `Generado por Nómadas Tours - Sistema de Gestión`;
 
-            // Create a temporary textarea to copy the text
             const textarea = document.createElement('textarea');
             textarea.value = clientsList;
             document.body.appendChild(textarea);
@@ -3580,7 +4005,6 @@
             showNotification('Lista de clientes copiada al portapapeles', 'success');
         }
 
-        // Reports functionality
         function renderReports() {
             updateReport();
         }
@@ -3588,11 +4012,9 @@
         function updateReport() {
             const reportsContainer = document.getElementById('reportsContent');
             
-            // Get date filter values
             const startDate = document.getElementById('reportStartDate').value;
             const endDate = document.getElementById('reportEndDate').value;
             
-            // Filter trips based on date range
             let filteredTrips = trips;
             if (startDate || endDate) {
                 filteredTrips = trips.filter(trip => {
@@ -3610,7 +4032,6 @@
                 });
             }
             
-            // Calculate statistics
             const totalTrips = filteredTrips.length;
             const totalClients = filteredTrips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
             const totalRevenue = filteredTrips.reduce((sum, trip) => {
@@ -3624,10 +4045,8 @@
             }, 0);
             const netProfit = totalRevenue - totalExpenses;
             
-            // Get trips sorted by date (newest first)
             const sortedTrips = [...filteredTrips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
             
-            // Get top destinations
             const destinations = {};
             filteredTrips.forEach(trip => {
                 if (destinations[trip.destination]) {
@@ -3645,7 +4064,6 @@
                 .sort((a, b) => b[1].revenue - a[1].revenue)
                 .slice(0, 5);
             
-            // Get payment methods statistics
             const paymentMethods = {};
             filteredTrips.forEach(trip => {
                 if (trip.clients) {
@@ -3667,7 +4085,6 @@
                 }
             });
             
-            // Get expense categories statistics
             const expenseCategories = {};
             filteredTrips.forEach(trip => {
                 if (trip.expenses) {
@@ -3860,30 +4277,25 @@
                 </div>
             `;
             
-            // Update monthly chart
             updateMonthlyChart(filteredTrips);
         }
 
         function updateMonthlyChart(filteredTrips) {
             const ctx = document.getElementById('monthlyChart').getContext('2d');
             
-            // Destroy existing chart if it exists
             if (monthlyChart) {
                 monthlyChart.destroy();
             }
             
-            // Calculate monthly revenue
             const monthlyRevenue = {};
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
             
-            // Initialize all months with 0 revenue
             for (let i = 0; i < 12; i++) {
                 const month = i + 1;
                 monthlyRevenue[`${currentYear}-${month.toString().padStart(2, '0')}`] = 0;
             }
             
-            // Calculate revenue for each trip
             filteredTrips.forEach(trip => {
                 if (trip.clients) {
                     trip.clients.forEach(client => {
@@ -3903,7 +4315,6 @@
                 }
             });
             
-            // Prepare data for chart
             const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
             const data = labels.map((label, index) => {
                 const month = (index + 1).toString().padStart(2, '0');
@@ -3911,7 +4322,6 @@
                 return monthlyRevenue[key] || 0;
             });
             
-            // Create new chart
             monthlyChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -3957,11 +4367,9 @@
         }
 
         function exportReport() {
-            // Get date filter values
             const startDate = document.getElementById('reportStartDate').value;
             const endDate = document.getElementById('reportEndDate').value;
             
-            // Filter trips based on date range
             let filteredTrips = trips;
             if (startDate || endDate) {
                 filteredTrips = trips.filter(trip => {
@@ -3979,7 +4387,6 @@
                 });
             }
             
-            // Create a simple text report
             let report = "REPORTE DE NÓMADAS TOURS\n";
             report += "=========================\n\n";
             
@@ -3991,7 +4398,6 @@
                 report += "\n";
             }
             
-            // Calculate statistics
             const totalTrips = filteredTrips.length;
             const totalClients = filteredTrips.reduce((sum, trip) => sum + (trip.clients ? trip.clients.length : 0), 0);
             const totalRevenue = filteredTrips.reduce((sum, trip) => {
@@ -4013,7 +4419,6 @@
             report += `Gastos Registrados: ${formatCurrency(totalExpenses)}\n`;
             report += `Ganancia Neta: ${formatCurrency(netProfit)}\n\n`;
             
-            // Get trips sorted by date (newest first)
             const sortedTrips = [...filteredTrips].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
             
             report += "ÚLTIMOS VIAJES\n";
@@ -4048,7 +4453,6 @@
             report += `\nGenerado el: ${new Date().toLocaleString('es-MX')}\n`;
             report += "Sistema de Gestión - Nómadas Tours\n";
             
-            // Create a blob and download the file
             const blob = new Blob([report], { type: 'text/plain' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -4062,7 +4466,6 @@
             showNotification('Reporte exportado exitosamente', 'success');
         }
 
-        // Tools functionality
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -4072,7 +4475,6 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     
-                    // Validate data structure
                     if (data.trips && Array.isArray(data.trips)) {
                         trips = data.trips;
                     } else {
@@ -4099,13 +4501,11 @@
             };
             reader.readAsText(file);
             
-            // Reset file input
             event.target.value = '';
         }
 
         function exportData(format) {
             if (format === 'json') {
-                // Export as JSON
                 const data = {
                     trips: trips,
                     globalClients: globalClients,
@@ -4125,14 +4525,11 @@
                 
                 showNotification('Datos exportados en formato JSON', 'success');
             } else if (format === 'csv') {
-                // Export as CSV (simplified format)
                 let csv = 'Tipo,ID,Nombre,Detalles\n';
                 
-                // Add trips
                 trips.forEach(trip => {
                     csv += `Viaje,${trip.id},"${trip.name}","Destino: ${trip.destination}, Fechas: ${trip.startDate} a ${trip.endDate}, Precio: ${trip.price}"\n`;
                     
-                    // Add clients for this trip
                     if (trip.clients) {
                         trip.clients.forEach(client => {
                             const clientPaid = client.payments ? client.payments.reduce((sum, payment) => sum + payment.amount, 0) : 0;
@@ -4140,7 +4537,6 @@
                         });
                     }
                     
-                    // Add expenses for this trip
                     if (trip.expenses) {
                         trip.expenses.forEach(expense => {
                             csv += `Gasto,${expense.id},"${expense.description}","Categoría: ${expense.category}, Monto: ${expense.amount}, Fecha: ${expense.date}"\n`;
@@ -4148,7 +4544,6 @@
                     }
                 });
                 
-                // Add global clients not in trips
                 globalClients.forEach(globalClient => {
                     let isInTrip = false;
                     
@@ -4160,8 +4555,8 @@
                                     break;
                                 }
                             }
+                            if (isInTrip) break;
                         }
-                        if (isInTrip) break;
                     }
                     
                     if (!isInTrip) {
@@ -4197,10 +4592,7 @@
         }
 
         function exportProjectCode() {
-            // Get the entire HTML of the page
             const html = document.documentElement.outerHTML;
-            
-            // Create a blob and download the file
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -4245,7 +4637,6 @@
                 try {
                     const data = JSON.parse(e.target.result);
                     
-                    // Validate backup structure
                     if (!data.trips || !data.globalClients || !data.backupDate) {
                         showNotification('El archivo no es un respaldo válido', 'error');
                         return;
@@ -4267,18 +4658,14 @@
             };
             reader.readAsText(file);
             
-            // Reset file input
             event.target.value = '';
         }
 
-        // Filter trips in dashboard
         function filterTrips() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             
-            // Actualizar filteredTrips con todos los viajes
             filteredTrips = [...trips];
             
-            // Aplicar filtros si hay texto de búsqueda
             if (searchTerm) {
                 filteredTrips = filteredTrips.filter(trip => {
                     const text = `${trip.name} ${trip.destination}`.toLowerCase();
@@ -4286,12 +4673,102 @@
                 });
             }
             
-            // Actualizar la vista actual
-            if (currentView === 'grid') {
-                renderTripsGrid();
-            } else {
-                renderTripsList();
-            }
+            applySorting();
+        }
+
+        function sortTrips(field) {
+            const currentOrder = sortConfig.field === field ? (sortConfig.order === 'asc' ? 'desc' : 'asc') : 'asc';
+            sortConfig.field = field;
+            sortConfig.order = currentOrder;
+            
+            document.getElementById('sortBy').value = field;
+            document.getElementById('sortOrder').value = currentOrder;
+            
+            applySorting();
+            
+            const headers = document.querySelectorAll('#tripsTable th.sortable');
+            headers.forEach(header => {
+                header.classList.remove('sort-asc', 'sort-desc');
+                if (header.onclick && header.onclick.toString().includes(field)) {
+                    header.classList.add(currentOrder === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
+        }
+
+        function sortGlobalClients(field) {
+            globalClients.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(field) {
+                    case 'name':
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                        break;
+                    case 'phone':
+                        valueA = a.phone || '';
+                        valueB = b.phone || '';
+                        break;
+                    case 'email':
+                        valueA = a.email || '';
+                        valueB = b.email || '';
+                        break;
+                    case 'address':
+                        valueA = a.address || '';
+                        valueB = b.address || '';
+                        break;
+                    case 'food':
+                        valueA = a.food ? 1 : 0;
+                        valueB = b.food ? 1 : 0;
+                        break;
+                    default:
+                        valueA = a.name.toLowerCase();
+                        valueB = b.name.toLowerCase();
+                }
+                
+                if (valueA < valueB) return -1;
+                if (valueA > valueB) return 1;
+                return 0;
+            });
+            
+            renderGlobalClients();
+        }
+
+        // Event listeners
+        document.getElementById('whatsappMessage').addEventListener('input', function() {
+            const count = this.value.length;
+            document.getElementById('charCount').textContent = count;
+            updateMessagePreview();
+        });
+
+        document.getElementById('clientDiscount').addEventListener('input', function() {
+            const trip = trips.find(t => t.id === currentTripId);
+            if (!trip) return;
+            
+            const discount = parseFloat(this.value) || 0;
+            const originalPrice = trip.price;
+            const finalPrice = originalPrice * (1 - discount / 100);
+            
+            document.getElementById('clientFinalPrice').value = finalPrice.toFixed(2);
+        });
+
+        // Add this function to fix the missing sortTrips function
+        function sortTrips(field) {
+            const currentOrder = sortConfig.field === field ? (sortConfig.order === 'asc' ? 'desc' : 'asc') : 'asc';
+            sortConfig.field = field;
+            sortConfig.order = currentOrder;
+            
+            document.getElementById('sortBy').value = field;
+            document.getElementById('sortOrder').value = currentOrder;
+            
+            applySorting();
+            
+            const headers = document.querySelectorAll('#tripsTable th.sortable');
+            headers.forEach(header => {
+                header.classList.remove('sort-asc', 'sort-desc');
+                if (header.onclick && header.onclick.toString().includes(field)) {
+                    header.classList.add(currentOrder === 'asc' ? 'sort-asc' : 'sort-desc');
+                }
+            });
         }
     </script>
 </body>
